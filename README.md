@@ -1,2 +1,1 @@
-# TODO
-Fix client settings desync
+https://raspberrypi.ru/files/camera_guide.pdf

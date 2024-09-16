@@ -15,10 +15,9 @@ import cv2
 
 app = Flask(__name__)
 
-cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-cap.set(cv2.CAP_PROP_FPS, 60)
+picam2 = Picamera2()
+picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+picam2.start()
 
 settings = _load_settings()
 
@@ -33,22 +32,11 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/save-image")
-def save_image():
-
-    picam2 = Picamera2()
-    camera_config = picam2.create_preview_configuration()
-    picam2.configure(camera_config)
-    picam2.start_preview(Preview.DRM)
-    picam2.start()
-    time.sleep(2)
-    picam2.capture_file("test.jpg")
-
-
 @app.route("/raw_video")
 def video_feed():
     return Response(
-        _gen_frames(cap, settings), mimetype="multipart/x-mixed-replace; boundary=frame"
+        _gen_frames(settings, picam2),
+        mimetype="multipart/x-mixed-replace; boundary=frame",
     )
 
 

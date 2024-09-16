@@ -13,13 +13,5 @@ document.getElementById("flip-button").addEventListener("click", function () {
         body: JSON.stringify(settings), // Send the settings as JSON data in the POST request
     });
 });
-document.getElementById("save-image").addEventListener("click", function () {
-    fetch("/save_image", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-});
 
 // Add more event listeners here for other buttons, sliders, checkboxes, etc.

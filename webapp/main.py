@@ -42,6 +42,7 @@ def video_feed():
 @app.route("/")
 def index():
     # Render the index page
+    cv2.imwrite("image_name.jpg")
     return render_template("index.html")
 
 

@@ -11,9 +11,7 @@ document.getElementById('flip-button').addEventListener('click', function() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(settings)  // Send the settings as JSON data in the POST request
-    }).then(r =>
-        console.log(JSON.stringify(r))
-    );
+    });
 });
 
 // Add more event listeners here for other buttons, sliders, checkboxes, etc.

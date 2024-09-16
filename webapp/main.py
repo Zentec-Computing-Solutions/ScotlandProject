@@ -1,50 +1,37 @@
-from flask import Flask, render_template, Response
 import os
 
-os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
+from flask import Flask, Response, render_template, jsonify
+from camera_handler import _gen_frames
+from loggerthyst import *
+from settings import _load_settings, _update_settings
+
+os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"  # https://www.reddit.com/r/learnpython/comments/zxxsal/comment/l5xscrp/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 import cv2
 
 app = Flask(__name__)
 
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+cap.set(cv2.CAP_PROP_FPS, 60)
 
-def gen():
-    # Open the video capture using /dev/video0
-    cap = cv2.VideoCapture(0)
-
-    # Check if the camera opened successfully
-    if not cap.isOpened():
-        raise RuntimeError("Could not start video capture.")
-
-    while True:
-        # Read a frame from the camera
-        ret, frame = cap.read()
-        if not ret:
-            break
-
-        # Convert the frame to JPEG format
-        ret, jpeg = cv2.imencode(".jpg", frame)
-        if not ret:
-            continue
-
-        # Yield the output frame in byte format
-        yield (
-            b"--frame\r\n"
-            b"Content-Type: image/jpeg\r\n\r\n" + jpeg.tobytes() + b"\r\n"
-        )
+settings = _load_settings()
 
 
-@app.route("/video_feed")
-def video_feed():
-    # Video streaming route
-    return Response(gen(), mimetype="multipart/x-mixed-replace; boundary=frame")
+@app.route('/update_settings', methods=['POST'])
+def update_settings():
+    return jsonify(_update_settings(settings))
 
 
-@app.route("/")
+@app.route('/')
 def index():
-    # Render the index page
-    cv2.imwrite("image_name.jpg")
-    return render_template("index.html")
+    return render_template('index.html')
 
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+@app.route('/raw_video')
+def video_feed():
+    return Response(_gen_frames(cap, settings), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8080, host="0.0.0.0")

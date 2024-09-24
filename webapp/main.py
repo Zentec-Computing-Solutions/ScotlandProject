@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, Response, render_template, jsonify
+from flask import Flask, Response, render_template, jsonify, request
 from camera_handler import _gen_frames
 from loggerthyst import *
 from settings import _load_settings, _update_settings
@@ -23,6 +23,11 @@ picam2.start()
 
 settings = _load_settings()
 
+@app.route('/set_brightness')
+def set_brightness():
+    brightness = float(request.args.get('value'))
+    picam2.set_controls({"Brightness": brightness})
+    return "Brightness set!"
 
 @app.route("/update_settings", methods=["POST"])
 def update_settings():

@@ -34,7 +34,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/raw_video")
+@app.route("/video_feed")
 def video_feed():
     return Response(
         _gen_frames(settings, picam2),
@@ -43,4 +43,4 @@ def video_feed():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8080, host="0.0.0.0")
+    app.run(debug=False, port=8080, host="0.0.0.0")

@@ -31,6 +31,13 @@ def set_brightness():
     return "Brightness set!"
 
 
+@app.route("/set_gain")
+def set_gain():
+    gain = float(request.args.get("value"))
+    picam2.set_controls({"AnalogueGain": gain})
+    return "Gain set!"
+
+
 @app.route("/update_settings", methods=["POST"])
 def update_settings():
     return jsonify(_update_settings(settings))

@@ -1,17 +1,16 @@
-let settings = {
-    flip_video: false,
-    // Add more settings here as needed
+function updateBrightness(value) {
+    fetch(`/set_brightness?value=${value}`);
+}
+
+function power(value) {
+    fetch(`/power?value=${value}`);
+}
+
+var slider = document.getElementById("brightnessSlider");
+let debounceTimer;
+slider.oninput = function () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        updateBrightness(this.value);
+    }, 50); // 200ms delay
 };
-
-document.getElementById("flip-button").addEventListener("click", function () {
-    settings.flip_video = !settings.flip_video; // Toggle the flip_video setting
-    fetch("/update_settings", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(settings), // Send the settings as JSON data in the POST request
-    });
-});
-
-// Add more event listeners here for other buttons, sliders, checkboxes, etc.

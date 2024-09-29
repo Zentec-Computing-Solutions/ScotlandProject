@@ -23,11 +23,13 @@ picam2.start()
 
 settings = _load_settings()
 
-@app.route('/set_brightness')
+
+@app.route("/set_brightness")
 def set_brightness():
-    brightness = float(request.args.get('value'))
+    brightness = float(request.args.get("value"))
     picam2.set_controls({"Brightness": brightness})
     return "Brightness set!"
+
 
 @app.route("/update_settings", methods=["POST"])
 def update_settings():
@@ -37,6 +39,16 @@ def update_settings():
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/power")
+def power():
+    power = str(request.args.get("value"))
+    if power == "shutdown":
+        os.system("systemctl poweroff")
+    elif power == "restart":
+        os.system("systemctl reboot -i")
+    return power
 
 
 @app.route("/video_feed")

@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Marine Design Engineering | Control Panel</title>
-
         <link
             rel="stylesheet"
             href="{{ url_for('static',filename='css/styles.css') }}"
@@ -25,13 +24,13 @@
                 </div>
                 <div class="controls">
                     <input
+                        id="brightnessSlider"
                         class="slider"
                         type="range"
                         min="-1"
                         max="1"
                         step="0.01"
                         value="0"
-                        onchange="updateBrightness(this.value)"
                     />
                     <input
                         class="button"
@@ -42,15 +41,15 @@
                     <input
                         class="button"
                         type="button"
-                        value="Restart Webserver"
+                        value="Restart Pi"
+                        onclick="power('restart')"
                     />
-                    <input class="button" type="button" value="Restart Pi" />
-                    <input class="button" type="button" value="Shutdown Pi" />
-                    <script>
-                        function updateBrightness(value) {
-                            fetch(`/set_brightness?value=${value}`);
-                        }
-                    </script>
+                    <input
+                        class="button"
+                        type="button"
+                        value="Shutdown Pi"
+                        onclick="power('shutdown')"
+                    />
                     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
                 </div>
             </div>

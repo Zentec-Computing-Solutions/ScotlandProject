@@ -32,14 +32,14 @@ def set_brightness():
 
 
 @app.route("/set_contrast")
-def set_gain():
+def set_contrast():
     constrast = float(request.args.get("value"))
     picam2.set_controls({"Contrast": constrast})
     return "Contrast set!"
 
 
-@app.route("/set_contrast")
-def set_gain():
+@app.route("/set_saturation")
+def set_saturation():
     saturation = float(request.args.get("value"))
     picam2.set_controls({"Saturation": saturation})
     return "Saturation set!"

@@ -10,6 +10,10 @@ function updateContrast(value) {
     fetch(`/set_contrast?value=${value}`);
 }
 
+function updateSaturation(value) {
+    fetch(`/set_saturation?value=${value}`);
+}
+
 var slider = document.getElementById("brightnessSlider");
 let brightnessDebounceTimer;
 slider.oninput = function () {
@@ -25,5 +29,14 @@ slider.oninput = function () {
     clearTimeout(contrastDebounceTimer);
     contrastDebounceTimer = setTimeout(() => {
         updateContrast(this.value);
+    }, 50); // 200ms delay
+};
+
+var slider = document.getElementById("contrastSlider");
+let saturationDebounceTimer;
+slider.oninput = function () {
+    clearTimeout(saturationDebounceTimer);
+    saturationDebounceTimer = setTimeout(() => {
+        updateSaturation(this.value);
     }, 50); // 200ms delay
 };

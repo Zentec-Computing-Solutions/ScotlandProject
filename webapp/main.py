@@ -38,6 +38,13 @@ def set_gain():
     return "Contrast set!"
 
 
+@app.route("/set_contrast")
+def set_gain():
+    saturation = float(request.args.get("value"))
+    picam2.set_controls({"Saturation": saturation})
+    return "Saturation set!"
+
+
 @app.route("/update_settings", methods=["POST"])
 def update_settings():
     return jsonify(_update_settings(settings))

@@ -1,11 +1,22 @@
+function power(value) {
+    if (confirm(`Your Pi is about to ${value}. Are you sure?`)) {
+        fetch(`/power?value=${value}`);
+    }
+}
+
+function reload() {
+    if (
+        confirm(
+            "Your page is about to reload, resetting the settings to default. Are you sure?"
+        )
+    ) {
+        location.reload();
+    }
+}
+
 function updateBrightness(value) {
     fetch(`/set_brightness?value=${value}`);
 }
-
-function power(value) {
-    fetch(`/power?value=${value}`);
-}
-
 function updateContrast(value) {
     fetch(`/set_contrast?value=${value}`);
 }

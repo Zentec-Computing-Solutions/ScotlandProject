@@ -1,6 +1,8 @@
 import os
+import subprocess
 
 from flask import Flask, Response, render_template, jsonify, request
+from flask_minify import Minify
 from camera_handler import _gen_frames
 from loggerthyst import *
 from settings import _load_settings, _update_settings
@@ -66,9 +68,9 @@ def index():
 def power():
     power = str(request.args.get("value"))
     if power == "shutdown":
-        os.system("systemctl poweroff")
+        subprocess.run(["sudo", "shutdown", "now"])
     elif power == "restart":
-        os.system("systemctl reboot -i")
+        subprocess.run(["sudo", "reboot", "now"])
     return power
 
 
@@ -81,4 +83,5 @@ def video_feed():
 
 
 if __name__ == "__main__":
+    Minify(app, html=True, cssless=True, js=True)
     app.run(debug=False, port=8080, host="0.0.0.0")

@@ -23,59 +23,121 @@
                     <img src="/video_feed" width="640" height="480" />
                 </div>
                 <div class="controls">
-                    <input
-                        id="brightnessSlider"
-                        class="slider"
-                        type="range"
-                        min="-1"
-                        max="1"
-                        step="0.01"
-                        value="0"
-                    />
-                    <input
-                        id="contrastSlider"
-                        class="slider"
-                        type="range"
-                        min="0"
-                        max="32"
-                        step="0.1"
-                        value="0"
-                    />
-                    <input
-                        id="saturationSlider"
-                        class="slider"
-                        type="range"
-                        min="0"
-                        max="32"
-                        step="0.1"
-                        value="0"
-                    />
-                    <input
-                        id="sharpnessSlider"
-                        class="slider"
-                        type="range"
-                        min="0"
-                        max="16"
-                        step="0.1"
-                        value="0"
-                    />
+                    <div class="controls-container">
+                        <div class="controls-labels">
+                            <label for="brightnessSlider">Brightness: </label>
+                            <label for="contrastSlider">Contrast: </label>
+                            <label for="saturationSlider">Saturation: </label>
+                            <label for="sharpnessSlider">Sharpness: </label>
+                        </div>
+                        <div class="input-containers">
+                            <div class="brightness-container input-container">
+                                <input
+                                    id="brightnessInput"
+                                    class="number-input"
+                                    type="number"
+                                    value="0"
+                                    min="-1"
+                                    max="1"
+                                    title="Brightness"
+                                />
+                                <input
+                                    id="brightnessSlider"
+                                    class="slider"
+                                    type="range"
+                                    min="-1"
+                                    max="1"
+                                    step="0.05"
+                                    value="0"
+                                    title="Brightness"
+                                />
+                            </div>
+                            <div class="contrast-container input-container">
+                                <input
+                                    id="contrastInput"
+                                    class="number-input"
+                                    type="number"
+                                    value="0"
+                                    min="0"
+                                    max="32"
+                                    title="Contrast"
+                                />
+                                <input
+                                    id="contrastSlider"
+                                    class="slider"
+                                    type="range"
+                                    min="0"
+                                    max="32"
+                                    step="0.5"
+                                    value="0"
+                                    title="Contrast"
+                                />
+                            </div>
+                            <div class="saturation-container input-container">
+                                <input
+                                    id="saturationInput"
+                                    class="number-input"
+                                    type="number"
+                                    value="0"
+                                    min="0"
+                                    max="32"
+                                    title="Saturation"
+                                />
+                                <input
+                                    id="saturationSlider"
+                                    class="slider"
+                                    type="range"
+                                    min="0"
+                                    max="32"
+                                    step="0.5"
+                                    value="0"
+                                    title="Saturation"
+                                />
+                            </div>
+
+                            <div class="sharpness-container input-container">
+                                <input
+                                    id="sharpnessInput"
+                                    class="number-input"
+                                    type="number"
+                                    value="0"
+                                    min="0"
+                                    max="16"
+                                    title="Sharpness"
+                                />
+                                <input
+                                    id="sharpnessSlider"
+                                    class="slider"
+                                    type="range"
+                                    min="0"
+                                    max="16"
+                                    step="0.5"
+                                    value="0"
+                                    title="Sharpness"
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <input
                         class="button"
                         type="button"
                         value="Reload Camera"
                         onclick="location.reload()"
+                        title="Reloads the webpage, resetting the settings to default"
                     />
                     <input
                         class="button"
                         type="button"
                         value="Restart Pi"
                         onclick="power('restart')"
+                        title="Restarts the Raspberry Pi"
                     />
                     <input
                         class="button"
                         type="button"
                         value="Shutdown Pi"
                         onclick="power('shutdown')"
+                        title="Shuts down the Raspberry Pi"
                     />
                     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
                 </div>

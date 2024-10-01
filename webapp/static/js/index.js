@@ -18,38 +18,35 @@ function updateSharpness(value) {
     fetch(`/set_sharpness?value=${value}`);
 }
 
-var slider = document.getElementById("brightnessSlider");
-let brightnessDebounceTimer;
-slider.oninput = function () {
-    clearTimeout(brightnessDebounceTimer);
-    brightnessDebounceTimer = setTimeout(() => {
-        updateBrightness(this.value);
-    }, 50); // 200ms delay
-};
+function setupSliderInputPair(sliderId, inputId, updateFunction) {
+    const slider = document.getElementById(sliderId);
+    const input = document.getElementById(inputId);
+    let debounceTimer;
+    function resetValues() {
+        slider.value = slider.defaultValue;
+        input.value = input.defaultValue;
+    }
 
-var slider = document.getElementById("contrastSlider");
-let contrastDebounceTimer;
-slider.oninput = function () {
-    clearTimeout(contrastDebounceTimer);
-    contrastDebounceTimer = setTimeout(() => {
-        updateContrast(this.value);
-    }, 50); // 200ms delay
-};
+    function handleInputChange() {
+        if (input.value === "") {
+            resetValues();
+        } else {
+            slider.value = input.value;
+        }
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            updateFunction(slider.value);
+        }, 50);
+    }
 
-var slider = document.getElementById("saturationSlider");
-let saturationDebounceTimer;
-slider.oninput = function () {
-    clearTimeout(saturationDebounceTimer);
-    saturationDebounceTimer = setTimeout(() => {
-        updateSaturation(this.value);
-    }, 50); // 200ms delay
-};
+    input.oninput = handleInputChange;
+    slider.oninput = function () {
+        input.value = this.value;
+        handleInputChange();
+    };
+}
 
-var slider = document.getElementById("sharpnessSlider");
-let sharpnessDebounceTimer;
-slider.oninput = function () {
-    clearTimeout(sharpnessDebounceTimer);
-    sharpnessDebounceTimer = setTimeout(() => {
-        updateSaturation(this.value);
-    }, 50); // 200ms delay
-};
+setupSliderInputPair("brightnessSlider", "brightnessInput", updateBrightness);
+setupSliderInputPair("contrastSlider", "contrastInput", updateContrast);
+setupSliderInputPair("saturationSlider", "saturationInput", updateSaturation);
+setupSliderInputPair("sharpnessSlider", "sharpnessInput", updateSharpness);

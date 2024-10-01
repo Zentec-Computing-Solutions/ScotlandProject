@@ -47,7 +47,7 @@ def set_saturation():
     return "Saturation set!"
 
 
-@app.router("/set_sharpness")
+@app.route("/set_sharpness")
 def set_sharpness():
     sharpness = float(request.args.get("value"))
     picam2.set_controls({"Sharpness": sharpness})

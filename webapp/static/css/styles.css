@@ -16,6 +16,17 @@ body {
     background-color: var(--dark-shades);
 }
 
+nav {
+    top: 0;
+    width: 100%;
+    display: flex;
+    background-color: var(--dark-accent);
+    border-radius: 10px;
+    margin-top: 10px;
+    justify-content: center;
+    z-index: 1;
+}
+
 .main-container {
     display: flex;
     flex-direction: row;
@@ -57,22 +68,13 @@ body {
     padding: 10px;
     width: 100%;
     margin-top: 10px;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
 }
 
 .button:hover {
     background-color: var(--dark-accent);
     cursor: pointer;
-}
-
-nav {
-    top: 0;
-    width: 100%;
-    display: flex;
-    background-color: var(--dark-accent);
-    border-radius: 10px;
-    margin-top: 10px;
-    justify-content: center;
-    z-index: 1;
 }
 
 .number-input {
@@ -90,14 +92,13 @@ nav {
     border-radius: 5px;
     background: #d3d3d3;
     outline: none;
-    opacity: 0.7;
-    -webkit-transition: 0.2s;
-    transition: opacity 0.2s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
     margin-top: 14px;
 }
 
 .slider:hover {
-    opacity: 1;
+    background-color: var(--dark-accent);
 }
 
 .slider::-webkit-slider-thumb {
@@ -106,7 +107,7 @@ nav {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: var(--dark-accent);
+    background: var(--main-colour);
     cursor: pointer;
 }
 
@@ -114,8 +115,17 @@ nav {
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: var(--dark-accent);
+    background: var(--main-colour);
     cursor: pointer;
+}
+
+.number-input {
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+
+.number-input:hover {
+    background-color: var(--dark-accent);
 }
 
 .input-container {

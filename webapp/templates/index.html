@@ -21,7 +21,12 @@
         <main>
             <div class="main-container">
                 <div class="video-container">
-                    <img src="/video_feed" width="1280" height="720" />
+                    <img
+                        id="video_feed"
+                        src="/video_feed"
+                        width="1280"
+                        height="720"
+                    />
                 </div>
                 <div class="controls">
                     <div class="controls-container">
@@ -30,6 +35,8 @@
                             <label for="contrastSlider">Contrast: </label>
                             <label for="saturationSlider">Saturation: </label>
                             <label for="sharpnessSlider">Sharpness: </label>
+                            <label for="led">LED enabled: </label>
+                            <label for="camera_enabled">Camera enabled: </label>
                         </div>
                         <div class="input-containers">
                             <div class="brightness-container input-container">
@@ -117,8 +124,35 @@
                                     title="Sharpness"
                                 />
                             </div>
+                            <div class="led-container input-container">
+                                <div class="checkbox-wrapper">
+                                    <input
+                                        id="led"
+                                        type="checkbox"
+                                        class="custom-checkbox"
+                                        value="off"
+                                        checked
+                                        onclick="led(this)"
+                                        title="Toggles the LED"
+                                    />
+                                </div>
+                            </div>
+                            <div class="camera-container input-container">
+                                <div class="checkbox-wrapper">
+                                    <input
+                                        id="camera_enabled"
+                                        class="custom-checkbox"
+                                        type="checkbox"
+                                        value="on"
+                                        checked
+                                        onclick="cameraEnabled(this)"
+                                        title="Toggles the camera feed to the browser"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                     <input
                         class="button"
                         type="button"

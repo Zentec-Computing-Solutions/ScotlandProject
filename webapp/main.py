@@ -18,7 +18,7 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = (
 )
 import cv2
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static")
 socketio = SocketIO(app)
 
 picam2 = Picamera2()
@@ -28,6 +28,16 @@ picam2.configure(
 picam2.start()
 
 settings = _load_settings()
+
+red_led = FisheyeLED(17)
+
+@app.route("/inital_data")
+def inital_data():
+    data = {
+        "led_on": red_led.is_on(),
+    }
+    return data
+    
 
 @socketio.on("update_setting")
 def update_setting(data):
@@ -52,19 +62,18 @@ def power(data):
         subprocess.run(["sudo", "reboot", "now"])
     return power
 
+@socketio.on("led")
+def led(data):
+    led = bool(data["checked"])
+    if led == True:
+        red_led.on()
+    elif led == False:
+        red_led.off()
+    return led
+
 @app.route("/")
 def index():
     return render_template("index.html")
-
-
-@app.route("/power")
-def power():
-    power = str(request.args.get("value"))
-    if power == "shutdown":
-        subprocess.run(["sudo", "shutdown", "now"])
-    elif power == "restart":
-        subprocess.run(["sudo", "reboot", "now"])
-    return power
 
 
 @app.route("/video_feed")
@@ -77,4 +86,4 @@ def video_feed():
 
 if __name__ == "__main__":
     Minify(app, html=True, cssless=True, js=True)
-    app.run(debug=False, port=8080, host="0.0.0.0")
+    socketio.run(app=app, debug=False, port=8080, host="0.0.0.0")

@@ -4,6 +4,8 @@ https://github.com/raspberrypi/picamera2/blob/main/examples
 
 https://www.reddit.com/r/learnpython/comments/zxxsal/comment/l5xscrp/
 
+https://getcssscan.com/css-checkboxes-examples
+
 ## Things to do:
 
 -   [ ] Run on Pi startup

@@ -2,10 +2,26 @@ const socket = io();
 
 function power(value) {
     if (confirm(`Your Pi is about to ${value}. Are you sure?`)) {
-        socket.emit("power", value);
+        socket.emit("power", { value: value });
     }
 }
 
+function led(checkbox) {
+    const value = checkbox.value;
+    const checked = checkbox.checked;
+    const data = { value: value, checked: checked };
+    socket.emit("led", data);
+}
+
+function cameraEnabled(checkbox) {
+    const checked = checkbox.checked;
+    const video_feed = document.getElementById("video_feed");
+    if (checked) {
+        video_feed.src = "/video_feed";
+    } else {
+        video_feed.src = "static/img/disabled_camera.png";
+    }
+}
 function reload() {
     if (
         confirm(
@@ -21,7 +37,17 @@ function reload() {
  * @param {number|string} settingValue - The new value of the setting.
  */
 function updateSetting(settingName, settingValue) {
-  socket.emit('update_setting', { name: settingName, value: settingValue });
+    socket.emit("update_setting", { name: settingName, value: settingValue });
+}
+
+function getInitalData() {
+    fetch("/inital_data").then((response) => {
+        response.json().then((data) => {
+            console.log(data);
+            const led = document.getElementById("led");
+            led.checked = data.led_on;
+        });
+    });
 }
 
 function setupSliderInputPair(settingName, sliderId, inputId) {
@@ -56,3 +82,7 @@ setupSliderInputPair("brightness", "brightnessSlider", "brightnessInput");
 setupSliderInputPair("contrast", "contrastSlider", "contrastInput");
 setupSliderInputPair("saturation", "saturationSlider", "saturationInput");
 setupSliderInputPair("sharpness", "sharpnessSlider", "sharpnessInput");
+
+window.onload = function () {
+    getInitalData();
+};

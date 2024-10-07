@@ -1,12 +1,13 @@
+import cv2
 import os
+from picamera2 import Picamera2
 
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = (
     "0"  # https://www.reddit.com/r/learnpython/comments/zxxsal/comment/l5xscrp/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 )
-import cv2
 
 
-def _gen_frames(settings, camera):
+def _gen_frames(camera: Picamera2):
     while True:
         # Capture frame-by-frame
         frame = camera.capture_array()

@@ -69,6 +69,7 @@ def led(data):
         red_led.on()
     elif led == False:
         red_led.off()
+    socketio.emit("led", data, include_self=False)
     return led
 
 @app.route("/")

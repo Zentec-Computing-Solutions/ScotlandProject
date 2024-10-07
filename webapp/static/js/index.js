@@ -13,6 +13,11 @@ function led(checkbox) {
     socket.emit("led", data);
 }
 
+socket.on("led", function (data) {
+    const led = document.getElementById("led");
+    led.checked = data.checked;
+});
+
 function cameraEnabled(checkbox) {
     const checked = checkbox.checked;
     const video_feed = document.getElementById("video_feed");
@@ -31,11 +36,6 @@ function reload() {
         location.reload();
     }
 }
-/**
- * Sends a socket.io event to the server to update the specified setting to the given value.
- * @param {string} settingName - The name of the setting to update.
- * @param {number|string} settingValue - The new value of the setting.
- */
 function updateSetting(settingName, settingValue) {
     socket.emit("update_setting", { name: settingName, value: settingValue });
 }

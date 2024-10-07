@@ -1,6 +1,8 @@
+const socket = io();
+
 function power(value) {
     if (confirm(`Your Pi is about to ${value}. Are you sure?`)) {
-        fetch(`/power?value=${value}`);
+        socket.emit("power", value);
     }
 }
 
@@ -13,23 +15,16 @@ function reload() {
         location.reload();
     }
 }
-
-function updateBrightness(value) {
-    fetch(`/set_brightness?value=${value}`);
-}
-function updateContrast(value) {
-    fetch(`/set_contrast?value=${value}`);
-}
-
-function updateSaturation(value) {
-    fetch(`/set_saturation?value=${value}`);
+/**
+ * Sends a socket.io event to the server to update the specified setting to the given value.
+ * @param {string} settingName - The name of the setting to update.
+ * @param {number|string} settingValue - The new value of the setting.
+ */
+function updateSetting(settingName, settingValue) {
+  socket.emit('update_setting', { name: settingName, value: settingValue });
 }
 
-function updateSharpness(value) {
-    fetch(`/set_sharpness?value=${value}`);
-}
-
-function setupSliderInputPair(sliderId, inputId, updateFunction) {
+function setupSliderInputPair(settingName, sliderId, inputId) {
     const slider = document.getElementById(sliderId);
     const input = document.getElementById(inputId);
     let debounceTimer;
@@ -46,7 +41,7 @@ function setupSliderInputPair(sliderId, inputId, updateFunction) {
         }
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-            updateFunction(slider.value);
+            updateSetting(settingName, slider.value);
         }, 50);
     }
 
@@ -57,7 +52,7 @@ function setupSliderInputPair(sliderId, inputId, updateFunction) {
     };
 }
 
-setupSliderInputPair("brightnessSlider", "brightnessInput", updateBrightness);
-setupSliderInputPair("contrastSlider", "contrastInput", updateContrast);
-setupSliderInputPair("saturationSlider", "saturationInput", updateSaturation);
-setupSliderInputPair("sharpnessSlider", "sharpnessInput", updateSharpness);
+setupSliderInputPair("brightness", "brightnessSlider", "brightnessInput");
+setupSliderInputPair("contrast", "contrastSlider", "contrastInput");
+setupSliderInputPair("saturation", "saturationSlider", "saturationInput");
+setupSliderInputPair("sharpness", "sharpnessSlider", "sharpnessInput");

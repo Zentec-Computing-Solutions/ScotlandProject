@@ -1,9 +1,9 @@
 from flask import Response, render_template
 
-from camera_handler import _gen_frames
+from camera_handler import *
 
 
-def init_routes(app, picam2):
+def init_routes(app, picam2, red_led):
     @app.route("/")
     def index():
         return render_template("index.html")
@@ -11,13 +11,13 @@ def init_routes(app, picam2):
     @app.route("/video_feed")
     def video_feed():
         return Response(
-            _gen_frames(picam2),
+            new_gen_frames(picam2),
             mimetype="multipart/x-mixed-replace; boundary=frame",
         )
 
     @app.route("/inital_data")
     def inital_data():
         data = {
-            "led_on": False  # Default value, will be managed via socket events
+            "led_on": red_led.is_on(),  # Default value, will be managed via socket events
         }
         return data

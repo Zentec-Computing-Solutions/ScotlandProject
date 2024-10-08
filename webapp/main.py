@@ -22,9 +22,10 @@ picam2.start()
 
 # Initialize components (routes, socketio handlers)
 red_led = FisheyeLED(17)
-init_routes(app, picam2)
+init_routes(app, picam2, red_led)
 init_socketio(socketio, picam2, red_led)
 
 if __name__ == "__main__":
     Minify(app, html=True, cssless=True, js=True)
-    socketio.run(app=app, debug=False, port=8080, host="0.0.0.0")
+    socketio.run(app=app, debug=False, port=8080,
+                 host="0.0.0.0")

@@ -1,5 +1,14 @@
 const socket = io();
 
+let rotation = 0;
+
+function rotateVideo() {
+    rotation += 180;
+    document.getElementById(
+        "video_feed"
+    ).style.transform = `rotate(${rotation}deg)`;
+}
+
 function power(value) {
     if (confirm(`Your Pi is about to ${value}. Are you sure?`)) {
         socket.emit("power", { value: value });

@@ -1,6 +1,5 @@
 from flask import Response, render_template
-
-from camera_handler import *
+from camera_handler import new_gen_frames
 
 
 def init_routes(app, picam2, red_led):
@@ -12,7 +11,7 @@ def init_routes(app, picam2, red_led):
     def video_feed():
         return Response(
             new_gen_frames(picam2),
-            mimetype="multipart/x-mixed-replace; boundary=frame",
+            mimetype="multipart/x-mixed-replace; boundary=frame"
         )
 
     @app.route("/inital_data")

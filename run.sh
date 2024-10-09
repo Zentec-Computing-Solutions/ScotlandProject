@@ -1,5 +1,21 @@
 #!/bin/bash
 
+: 'kinacam.service
+[Unit]
+Description=Start Kinacam on Startup
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/admin/Fisheye/run.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+'
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 # Reset
 Color_Off='\033[0m' # Text Reset
 
@@ -38,6 +54,7 @@ install_requirements() {
 }
 
 # Check if virtual environment exists, if not create it and install requirements
+cd "$SCRIPT_DIR"
 if [ ! -d "venv" ]; then
   printf "${Blue}Virtual enviroment not found, creating...\n"
   SECONDS=0
@@ -64,9 +81,12 @@ printf "${Green}Starting web interface...\n"
 # Run the Python script (replace script.py with your script name)
 SECONDS=0
 python webapp/main.py
+# cd webapp
+# gunicorn -b 0.0.0.0:8080 --timeout 600 main:app
 printf "${Green}Web interface started in %s seconds.\n" "$SECONDS"
 
 printf "${Red}Exiting...\n"
+cd ..
 
 # Deactivate the virtual environment
 deactivate

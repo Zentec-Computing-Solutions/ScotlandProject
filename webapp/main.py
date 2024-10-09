@@ -16,8 +16,8 @@ socketio = SocketIO(app)
 
 # Initialize Picamera2
 picam2 = Picamera2()
-picam2.configure(
-    picam2.create_video_configuration(main={"size": (1280, 720), "format": "RGB888"}))
+picam2.configure(picam2.create_video_configuration(
+    main={"size": (1280, 720), "format": "RGB888"}))
 picam2.start()
 
 # Initialize components (routes, socketio handlers)
@@ -27,5 +27,4 @@ init_socketio(socketio, picam2, red_led)
 
 if __name__ == "__main__":
     Minify(app, html=True, cssless=True, js=True)
-    socketio.run(app=app, debug=False, port=8080,
-                 host="0.0.0.0")
+    socketio.run(app=app, debug=False, port=8080, host="0.0.0.0", allow_unsafe_werkzeug=True)

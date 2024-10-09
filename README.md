@@ -8,13 +8,13 @@ https://getcssscan.com/css-checkboxes-examples
 
 ## Things to do:
 
--   [ ] Run on Pi startup
--   [ ] Wiper via scheduled gpio
--   [ ] Time and temp overlays
--   [ ] LEDs
--   [ ] Stream to VLC
--   [ ] Record video somehow to client
--   [ ] Ability to turn off camera from control panel
+-   [x] Run on Pi startup
+-   [ ] Wiper via scheduled gpio - Should be pretty easy, already implemented basic GPIO LEDs
+-   [ ] Time and temp overlays - Can be done with `cv2.putText()`
+-   [ ] LEDs - Via CLI
+-   [ ] Stream to VLC - Works, not the best with multiple clients, fixed delay issue with VLC setting
+-   [ ] Record video somehow to client - OBS/VLC?
+-   [x] Ability to turn off camera from control panel
 
 ## Solutions
 

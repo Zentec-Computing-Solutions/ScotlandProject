@@ -27,6 +27,13 @@ nav {
     z-index: 1;
 }
 
+.logo {
+    position: absolute;
+    height: 60px;
+    top: 12px;
+    left: 8px;
+}
+
 .main-container {
     display: flex;
     flex-direction: row;
@@ -38,7 +45,8 @@ nav {
     padding: 20px;
     border-radius: 10px;
     background-color: var(--light-shades);
-    filter: drop-shadow(5px 5px 10px #000000);
+    filter: drop-shadow(0px 0px 10px #000000);
+    transition: transform 0.3s ease-in-out;
 }
 
 .controls {
@@ -48,7 +56,7 @@ nav {
     padding: 20px;
     border-radius: 10px;
     background-color: var(--light-shades);
-    filter: drop-shadow(5px 5px 10px #000000);
+    filter: drop-shadow(0px 0px 10px #000000);
     border: none;
 }
 
@@ -140,9 +148,8 @@ nav {
     flex-direction: column;
 }
 
-.video_feed {
+#video_feed {
     border-radius: 5px;
-    transition: transform 0.3s ease-in-out;
 }
 
 label {

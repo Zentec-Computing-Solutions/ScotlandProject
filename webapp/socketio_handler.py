@@ -34,3 +34,9 @@ def init_socketio(socketio, picam2, red_led):
             red_led.off()
         socketio.emit("led", data, include_self=False)
         return led
+
+    @socketio.on("wiper")
+    def wiper(data):
+        time = bool(data["time"])
+        socketio.emit("wiper", data, include_self=False)
+        return wiper

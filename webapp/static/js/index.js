@@ -3,9 +3,9 @@ const socket = io();
 let rotation = 0;
 
 function rotateVideo() {
-    rotation += 180;
+    rotation += 90;
     document.getElementById(
-        "video_feed"
+        "video-container-id"
     ).style.transform = `rotate(${rotation}deg)`;
 }
 
@@ -13,6 +13,11 @@ function power(value) {
     if (confirm(`Your Pi is about to ${value}. Are you sure?`)) {
         socket.emit("power", { value: value });
     }
+}
+
+function wiperTimer(time) {
+    console.log(time);
+    socket.emit("wiper", { time: time });
 }
 
 function led(checkbox) {
@@ -25,6 +30,12 @@ function led(checkbox) {
 socket.on("led", function (data) {
     const led = document.getElementById("led");
     led.checked = data.checked;
+});
+
+socket.on("wiper", function (data) {
+    const wiper = document.getElementById("wiper-select");
+    console.log(wiper);
+    wiper.options[this.selectedIndex] = data.time;
 });
 
 function cameraEnabled(checkbox) {

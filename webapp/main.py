@@ -1,3 +1,4 @@
+from threading import Event
 from picamera2 import Picamera2
 import os
 from flask import Flask
@@ -27,4 +28,5 @@ init_socketio(socketio, picam2, red_led)
 
 if __name__ == "__main__":
     Minify(app, html=True, cssless=True, js=True)
-    socketio.run(app=app, debug=False, port=8080, host="0.0.0.0", allow_unsafe_werkzeug=True)
+    socketio.run(app=app, debug=False, port=8080,
+                 host="0.0.0.0", allow_unsafe_werkzeug=True)

@@ -4,6 +4,18 @@ const dropdownIndexArray = [0, 15, 30, 45, 60, 120, 180, 240, 300, 360, 720];
 let rotation = 0;
 function rotateVideo() {
     rotation += 90;
+    if (rotation === 90 || rotation === 270) {
+        document.getElementById("video-container-id").style.marginTop = "290px";
+        document.getElementById("video-container-id").style.marginLeft =
+            "-275px";
+    } else {
+        document.getElementById("video-container-id").style.marginTop = "10px";
+        document.getElementById("video-container-id").style.marginLeft = "1px";
+    }
+    if (rotation === 360) {
+        rotation = 0;
+    }
+    console.log(rotation);
     document.getElementById(
         "video-container-id"
     ).style.transform = `rotate(${rotation}deg)`;
@@ -18,6 +30,16 @@ function power(value) {
 function wiperTimer(time) {
     console.log(time);
     socket.emit("wiper", { time: time });
+}
+
+function restartWebserver() {
+    if (
+        confirm(
+            "Your webserver is about to restart. You will not have any control for a few minutes and may need to reload the page. Are you sure?"
+        )
+    ) {
+        socket.emit("restart_webserver");
+    }
 }
 
 socket.on("led", function (data) {

@@ -28,6 +28,10 @@ def init_socketio(socketio, picam2, red_led):
             subprocess.run(["sudo", "reboot", "now"])
         return power
 
+    @socketio.on("restart_webserver")
+    def restart_webserver():
+        subprocess.run(["sudo", "systemctl", "restart", "kinacam"])
+
     @socketio.on("led")
     def led(data):
         led = bool(data["checked"])

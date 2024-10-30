@@ -49,6 +49,7 @@
                             <label for="sharpnessSlider">Sharpness: </label>
                             <label for="led">LED enabled: </label>
                             <label for="camera_enabled">Camera enabled: </label>
+                            <label for="wiper-select">Wiper Schedule: </label>
                         </div>
                         <div class="input-containers">
                             <div class="brightness-container input-container">
@@ -162,24 +163,26 @@
                                     />
                                 </div>
                             </div>
+                            <select
+                                id="wiper-select"
+                                onchange="wiperTimer(this.options[this.selectedIndex].value)"
+                                class="input-container dropdown-input"
+                            >
+                                <option value="0">Off</option>
+                                <option value="15">Every 15 Mins</option>
+                                <option value="30">Every 30 Mins</option>
+                                <option value="45">Every 45 Mins</option>
+                                <option value="60">Every 60 Mins</option>
+                                <option value="120">Every 120 Mins</option>
+                                <option value="180">Every 180 Mins</option>
+                                <option value="240">Every 240 Mins</option>
+                                <option value="300">Every 300 Mins</option>
+                                <option value="360">Every 360 Mins</option>
+                                <option value="720">Every 720 Mins</option>
+                            </select>
                         </div>
                     </div>
-                    <select
-                        id="wiper-select"
-                        onchange="wiperTimer(this.options[this.selectedIndex].value)"
-                    >
-                        <option value="0">Off</option>
-                        <option value="15">Every 15 Mins</option>
-                        <option value="30">Every 30 Mins</option>
-                        <option value="45">Every 45 Mins</option>
-                        <option value="60">Every 60 Mins</option>
-                        <option value="120">Every 120 Mins</option>
-                        <option value="180">Every 180 Mins</option>
-                        <option value="240">Every 240 Mins</option>
-                        <option value="300">Every 300 Mins</option>
-                        <option value="360">Every 360 Mins</option>
-                        <option value="720">Every 720 Mins</option>
-                    </select>
+
                     <input
                         class="button"
                         type="button"
@@ -198,9 +201,16 @@
                     <input
                         class="button"
                         type="button"
-                        value="Reload Camera"
+                        value="Reload Page"
                         onclick="reload()"
                         title="Reloads the webpage, resetting the settings to default"
+                    />
+                    <input
+                        class="button"
+                        type="button"
+                        value="Restart Kinacam"
+                        onclick="restartWebserver()"
+                        title="Reboots Kinacam software"
                     />
                     <input
                         class="button"

@@ -50,7 +50,13 @@ printf "${Green}Virtual enviroment created in %s seconds.\n" "$SECONDS"
 printf "${Cyan}Installing requirements...\n"
 printf "${Cyan}This may take a minute...\n"
 install_requirements
-  
+
+# Fix weird Picamera2 bug where it fails to install
+sudo apt -y install python3-picamera2
+
+# Fix weird numpy bug
+pip uninstall numpy
+pip install numpy
 
 printf "${Cyan}Adding service to systemd...\n"
 # Install and start the service

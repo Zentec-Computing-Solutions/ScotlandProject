@@ -16,7 +16,7 @@ body {
 }
 
 nav {
-    color: var(--dark-shades);
+    color: var(--light-shades);
     top: 0;
     width: 100%;
     display: flex;

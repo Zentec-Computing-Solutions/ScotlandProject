@@ -11,7 +11,7 @@ Framerate issue is coming from python being singlethreaded, it has to stream one
 ## Things to do:
 
 -   [x] Run on Pi startup
--   [ ] Fix rotation of camera, make it 90, 180, 270
+-   [x] Fix rotation of camera, make it 90, 180, 270
 -   [x] Wiper via scheduled gpio - Should be pretty easy, already implemented basic GPIO LEDs, dropdown with times, test button
 -   [ ] Time and temp overlays - Can be done with `cv2.putText()`
 -   [ ] LEDs - Via CLI

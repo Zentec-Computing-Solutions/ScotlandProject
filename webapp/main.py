@@ -7,6 +7,7 @@ from flask_socketio import SocketIO
 from gpio import *
 from routes import init_routes
 from socketio_handler import init_socketio
+import RPi.GPIO
 
 # https://www.reddit.com/r/learnpython/comments/zxxsal/comment/l5xscrp/
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
@@ -22,9 +23,15 @@ picam2.configure(picam2.create_video_configuration(
 picam2.start()
 
 # Initialize components (routes, socketio handlers)
-red_led = FisheyeLED(17)
+wiper = KinacamWiper(5)
+red_led = KinacamLED(17)
 init_routes(app, picam2, red_led)
-init_socketio(socketio, picam2, red_led)
+init_socketio(socketio, picam2, red_led, wiper)
+
+# Set pin 22 to high to enable ethernet connection
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(22, GPIO.OUT)
+GPIO.output(22, GPIO.HIGH)
 
 if __name__ == "__main__":
     Minify(app, html=True, cssless=True, js=True)

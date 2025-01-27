@@ -83,7 +83,7 @@ SECONDS=0
 python webapp/main.py
 # cd webapp
 # gunicorn -b 0.0.0.0:8080 --timeout 600 main:app
-printf "${Green}Web interface started in %s seconds.\n" "$SECONDS"
+printf "\n${Green}Web interface ran for %s seconds.\n" "$SECONDS"
 
 printf "${Red}Exiting...\n"
 cd ..

@@ -1,8 +1,15 @@
 import datetime
 import colorama
 from colorama import Fore as f
+import inspect
 
 colorama.init(autoreset=True)
+
+
+def _get_caller_info():
+    """Returns the file name and line number of the caller."""
+    frame = inspect.stack()[2]
+    return frame.filename, frame.lineno
 
 
 def info(message: str):
@@ -13,9 +20,10 @@ def info(message: str):
         message (str): The string you want to be printed as info
     """
     now = datetime.datetime.now()
+    filename, lineno = _get_caller_info()
     print(
         f.GREEN
-        + f"[INFO | {now.strftime('%Y-%m-%d %H:%M:%S')}] "
+        + f"[INFO | {now.strftime('%Y-%m-%d %H:%M:%S')} | {filename}:{lineno}] "
         + f.WHITE
         + f"{message}"
     )
@@ -29,9 +37,10 @@ def warn(message: str):
         message (str): The string you want to be printed as a warning
     """
     now = datetime.datetime.now()
+    filename, lineno = _get_caller_info()
     print(
         f.YELLOW
-        + f"[INFO | {now.strftime('%Y-%m-%d %H:%M:%S')}] "
+        + f"[WARN | {now.strftime('%Y-%m-%d %H:%M:%S')} | {filename}:{lineno}] "
         + f.WHITE
         + f"{message}"
     )
@@ -45,9 +54,10 @@ def error(message: str):
         message (str): The string you want to be printed as an error
     """
     now = datetime.datetime.now()
+    filename, lineno = _get_caller_info()
     print(
         f.RED
-        + f"[INFO | {now.strftime('%Y-%m-%d %H:%M:%S')}] "
+        + f"[ERROR | {now.strftime('%Y-%m-%d %H:%M:%S')} | {filename}:{lineno}] "
         + f.WHITE
         + f"{message}"
     )
@@ -61,9 +71,10 @@ def fatal(message: str):
         message (str): The string you want to be printed as a fatal error
     """
     now = datetime.datetime.now()
+    filename, lineno = _get_caller_info()
     print(
         f.LIGHTRED_EX
-        + f"[INFO | {now.strftime('%Y-%m-%d %H:%M:%S')}] "
+        + f"[FATAL | {now.strftime('%Y-%m-%d %H:%M:%S')} | {filename}:{lineno}] "
         + f.WHITE
         + f"{message}"
     )

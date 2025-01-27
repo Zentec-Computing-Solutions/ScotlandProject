@@ -134,7 +134,7 @@ function getInitalData() {
             console.log(data);
             const led = document.getElementById("led");
             const wiperSelect = document.getElementById("wiper-select");
-            led.checked = data.led_on;
+            //led.checked = data.led_on;
             if (data.timer_interval === null) {
                 wiperSelect.selectedIndex = 0;
             } else {

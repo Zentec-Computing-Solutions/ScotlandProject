@@ -1,10 +1,10 @@
 import subprocess
 from threading import Thread
-import time
+from loggerthyst import info
 from wiper_timer import set_new_timer
 
 
-def init_socketio(socketio, picam2, red_led):
+def init_socketio(socketio, picam2, red_led, wiper):
 
     @socketio.on("update_setting")
     def update_setting(data):
@@ -43,14 +43,13 @@ def init_socketio(socketio, picam2, red_led):
         return led
 
     @socketio.on("wiper")
-    def wiper(data: dict):
+    def wiper_socket(data: dict):
         wiper_time = int(data["time"])
+        info(wiper_time)
         if wiper_time == -1:
-            red_led.on()
-            time.sleep(3)
-            red_led.off()
+            wiper.wipe()
         else:
             socketio.emit("wiper", data, include_self=False)
             wiper_time
-            set_new_timer(wiper_time, red_led)
+            set_new_timer(wiper_time, wiper)
             return wiper

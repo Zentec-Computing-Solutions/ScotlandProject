@@ -1,7 +1,7 @@
 # Kinacam
 Kincam uses Raspberry Pi OS Lite 64Bit. Kinacam and Marine Deisgn Engineering LTD are not affliated with Raspberry Pi Holdings plc or The Pi Foundation in any way - we just think they are really cool.
 
-Check out the [Wiki](/wiki) for installing and setup.
+Check out the [Wiki](https://github.com/Bluemethyst/Fisheye/wiki) for installing and setup.
 
 # Developer Notes - IGNORE
 

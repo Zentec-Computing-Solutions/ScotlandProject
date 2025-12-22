@@ -5,6 +5,11 @@ Check out the [Wiki](https://github.com/Bluemethyst/Fisheye/wiki) for installing
 
 # Developer Notes - IGNORE
 
+## Todo
+LEDs
+Release System x3
+If time: 1080p
+
 run.sh
 
 https://github.com/raspberrypi/picamera2/blob/main/examples

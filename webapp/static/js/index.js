@@ -22,9 +22,15 @@ function rotateVideo() {
 }
 
 function power(value) {
-    if (confirm(`Your Pi is about to ${value}. Are you sure?`)) {
-        socket.emit("power", { value: value });
-    }
+    mdui.confirm({
+        headline: "Confirm Action",
+        description: `Your Pi is about to ${value}. Are you sure?`,
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: () => {
+            socket.emit("power", { value: value });
+        }
+    });
 }
 
 function wiperTimer(time) {
@@ -33,13 +39,15 @@ function wiperTimer(time) {
 }
 
 function restartWebserver() {
-    if (
-        confirm(
-            "Your webserver is about to restart. You will not have any control for a few minutes and may need to reload the page. Are you sure?"
-        )
-    ) {
-        socket.emit("restart_webserver");
-    }
+    mdui.confirm({
+        headline: "Restart Webserver",
+        description: "Your webserver is about to restart. You will not have any control for a few minutes and may need to reload the page. Are you sure?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: () => {
+            socket.emit("restart_webserver");
+        }
+    });
 }
 
 socket.on("led", function (data) {
@@ -51,11 +59,9 @@ socket.on("wiper", function (data) {
     const wiperSelect = document.getElementById("wiper-select");
     timerInterval = parseInt(data.time);
     if (timerInterval === null) {
-        wiperSelect.selectedIndex = 0;
+        wiperSelect.value = "0";
     } else {
-        let timerIntervalIndex = dropdownIndexArray.indexOf(timerInterval);
-        console.log(timerIntervalIndex);
-        wiperSelect.selectedIndex = timerIntervalIndex;
+        wiperSelect.value = timerInterval.toString();
     }
 });
 
@@ -64,52 +70,33 @@ function updateSetting(settingName, settingValue) {
     socket.emit("update_setting", { name: settingName, value: settingValue });
 }
 
-function setupSliderInputPair(settingName, sliderId, inputId) {
+function setupSlider(settingName, sliderId) {
     const slider = document.getElementById(sliderId);
-    const input = document.getElementById(inputId);
     let debounceTimer;
-    function resetValues() {
-        slider.value = slider.defaultValue;
-        input.value = input.defaultValue;
-    }
 
-    function handleInputChange() {
-        if (input.value === "") {
-            resetValues();
-        } else {
-            slider.value = input.value;
-        }
+    slider.addEventListener('input', function() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-            updateSetting(settingName, slider.value);
+            updateSetting(settingName, parseFloat(slider.value));
         }, 50);
-    }
+    });
 
-    input.oninput = handleInputChange;
-    slider.oninput = function () {
-        input.value = this.value;
-        handleInputChange();
-    };
+    slider.addEventListener('change', function() {
+        updateSetting(settingName, parseFloat(slider.value));
+    });
 }
 
-setupSliderInputPair("brightness", "brightnessSlider", "brightnessInput");
-setupSliderInputPair("contrast", "contrastSlider", "contrastInput");
-setupSliderInputPair("saturation", "saturationSlider", "saturationInput");
-setupSliderInputPair("sharpness", "sharpnessSlider", "sharpnessInput");
+setupSlider("brightness", "brightnessSlider");
+setupSlider("contrast", "contrastSlider");
+setupSlider("saturation", "saturationSlider");
+setupSlider("sharpness", "sharpnessSlider");
 
 // BUTTONS
 function testWiper() {
     socket.emit("wiper", { time: -1 });
 }
 
-function led(checkbox) {
-    const value = checkbox.value;
-    const checked = checkbox.checked;
-    const data = { value: value, checked: checked };
-    socket.emit("led", data);
-}
-function cameraEnabled(checkbox) {
-    const checked = checkbox.checked;
+function cameraEnabled(checked) {
     const video_feed = document.getElementById("video_feed");
     if (checked) {
         video_feed.src = "/video_feed";
@@ -117,36 +104,55 @@ function cameraEnabled(checkbox) {
         video_feed.src = "static/img/disabled_camera.png";
     }
 }
+
 function reload() {
-    if (
-        confirm(
-            "Your page is about to reload, resetting the settings to default. Are you sure?"
-        )
-    ) {
-        location.reload();
-    }
+    mdui.confirm({
+        headline: "Reload Page",
+        description: "Your page is about to reload, resetting the settings to default. Are you sure?",
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm: () => {
+            location.reload();
+        }
+    });
 }
 
-// INITAL DATA
+// INITIAL DATA
 function getInitalData() {
     fetch("/inital_data").then((response) => {
         response.json().then((data) => {
             console.log(data);
-            const led = document.getElementById("led");
             const wiperSelect = document.getElementById("wiper-select");
-            //led.checked = data.led_on;
             if (data.timer_interval === null) {
-                wiperSelect.selectedIndex = 0;
+                wiperSelect.value = "0";
             } else {
-                let timerIntervalIndex = dropdownIndexArray.indexOf(
-                    data.timer_interval
-                );
-                wiperSelect.selectedIndex = timerIntervalIndex;
+                wiperSelect.value = data.timer_interval.toString();
             }
         });
     });
 }
 
-window.onload = function () {
+// Setup event listeners
+window.addEventListener('DOMContentLoaded', function () {
     getInitalData();
-};
+    
+    // Button click handlers
+    document.getElementById("test-wiper-btn").addEventListener("click", testWiper);
+    document.getElementById("rotate-btn").addEventListener("click", rotateVideo);
+    document.getElementById("reload-btn").addEventListener("click", reload);
+    document.getElementById("restart-webserver-btn").addEventListener("click", restartWebserver);
+    document.getElementById("restart-pi-btn").addEventListener("click", () => power('restart'));
+    document.getElementById("shutdown-pi-btn").addEventListener("click", () => power('shutdown'));
+    
+    // Camera switch handler
+    const cameraSwitch = document.getElementById("camera_enabled");
+    cameraSwitch.addEventListener("change", (e) => {
+        cameraEnabled(e.target.checked);
+    });
+    
+    // Wiper select handler
+    const wiperSelect = document.getElementById("wiper-select");
+    wiperSelect.addEventListener("change", (e) => {
+        wiperTimer(e.target.value);
+    });
+});

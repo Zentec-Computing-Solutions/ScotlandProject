@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "mdui": {
+      "command": "bunx",
+      "args": ["-y", "@mdui/mcp"]
+    }
+  }
+}

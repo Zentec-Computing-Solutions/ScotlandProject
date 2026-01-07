@@ -29,7 +29,7 @@ function power(value) {
         cancelText: "No",
         onConfirm: () => {
             socket.emit("power", { value: value });
-        }
+        },
     });
 }
 
@@ -41,12 +41,13 @@ function wiperTimer(time) {
 function restartWebserver() {
     mdui.confirm({
         headline: "Restart Webserver",
-        description: "Your webserver is about to restart. You will not have any control for a few minutes and may need to reload the page. Are you sure?",
+        description:
+            "Your webserver is about to restart. You will not have any control for a few minutes and may need to reload the page. Are you sure?",
         confirmText: "Yes",
         cancelText: "No",
         onConfirm: () => {
             socket.emit("restart_webserver");
-        }
+        },
     });
 }
 
@@ -74,14 +75,14 @@ function setupSlider(settingName, sliderId) {
     const slider = document.getElementById(sliderId);
     let debounceTimer;
 
-    slider.addEventListener('input', function() {
+    slider.addEventListener("input", function () {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
             updateSetting(settingName, parseFloat(slider.value));
         }, 50);
     });
 
-    slider.addEventListener('change', function() {
+    slider.addEventListener("change", function () {
         updateSetting(settingName, parseFloat(slider.value));
     });
 }
@@ -108,12 +109,13 @@ function cameraEnabled(checked) {
 function reload() {
     mdui.confirm({
         headline: "Reload Page",
-        description: "Your page is about to reload, resetting the settings to default. Are you sure?",
+        description:
+            "Your page is about to reload, resetting the settings to default. Are you sure?",
         confirmText: "Yes",
         cancelText: "No",
         onConfirm: () => {
             location.reload();
-        }
+        },
     });
 }
 
@@ -133,23 +135,33 @@ function getInitalData() {
 }
 
 // Setup event listeners
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener("DOMContentLoaded", function () {
     getInitalData();
-    
+
     // Button click handlers
-    document.getElementById("test-wiper-btn").addEventListener("click", testWiper);
-    document.getElementById("rotate-btn").addEventListener("click", rotateVideo);
+    document
+        .getElementById("test-wiper-btn")
+        .addEventListener("click", testWiper);
+    document
+        .getElementById("rotate-btn")
+        .addEventListener("click", rotateVideo);
     document.getElementById("reload-btn").addEventListener("click", reload);
-    document.getElementById("restart-webserver-btn").addEventListener("click", restartWebserver);
-    document.getElementById("restart-pi-btn").addEventListener("click", () => power('restart'));
-    document.getElementById("shutdown-pi-btn").addEventListener("click", () => power('shutdown'));
-    
+    document
+        .getElementById("restart-webserver-btn")
+        .addEventListener("click", restartWebserver);
+    document
+        .getElementById("restart-pi-btn")
+        .addEventListener("click", () => power("restart"));
+    document
+        .getElementById("shutdown-pi-btn")
+        .addEventListener("click", () => power("shutdown"));
+
     // Camera switch handler
     const cameraSwitch = document.getElementById("camera_enabled");
     cameraSwitch.addEventListener("change", (e) => {
         cameraEnabled(e.target.checked);
     });
-    
+
     // Wiper select handler
     const wiperSelect = document.getElementById("wiper-select");
     wiperSelect.addEventListener("change", (e) => {

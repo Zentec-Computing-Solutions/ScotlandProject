@@ -30,11 +30,13 @@
             <img
                 class="logo"
                 src="{{ url_for('static', filename='img/LogoHorizontalWhiteMedium.png') }}"
-                style="height: 40px; margin-left: 16px;"
+                style="height: 40px; margin-left: 16px"
             />
-            <mdui-top-app-bar-title>Kinacam | Control Panel</mdui-top-app-bar-title>
+            <mdui-top-app-bar-title
+                >Kinacam | Control Panel</mdui-top-app-bar-title
+            >
         </mdui-top-app-bar>
-        <main style="padding-top: 64px;">
+        <main style="padding-top: 64px">
             <div class="main-container">
                 <div class="video-container" id="video-container-id">
                     <img
@@ -44,9 +46,15 @@
                         height="720"
                     />
                 </div>
-                <mdui-card class="controls" style="padding: 24px;">
+                <mdui-card class="controls" style="padding: 24px">
                     <div class="controls-container">
-                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div
+                            style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 16px;
+                            "
+                        >
                             <div class="brightness-container input-container">
                                 <label for="brightnessSlider">Brightness</label>
                                 <mdui-slider
@@ -88,61 +96,99 @@
                                     value="1"
                                 ></mdui-slider>
                             </div>
-                            <div class="camera-container input-container" style="display: flex; align-items: center; gap: 8px;">
-                                <label for="camera_enabled">Camera enabled</label>
+                            <div
+                                class="camera-container input-container"
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                "
+                            >
+                                <label for="camera_enabled"
+                                    >Camera enabled</label
+                                >
                                 <mdui-switch
                                     id="camera_enabled"
                                     checked
                                 ></mdui-switch>
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div
+                                style="
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 8px;
+                                "
+                            >
                                 <label for="wiper-select">Wiper Schedule</label>
                                 <mdui-select
                                     id="wiper-select"
                                     variant="outlined"
                                 >
-                                    <mdui-menu-item value="0">Off</mdui-menu-item>
-                                    <mdui-menu-item value="15">Every 15 Mins</mdui-menu-item>
-                                    <mdui-menu-item value="30">Every 30 Mins</mdui-menu-item>
-                                    <mdui-menu-item value="45">Every 45 Mins</mdui-menu-item>
-                                    <mdui-menu-item value="60">Every 1 Hour</mdui-menu-item>
-                                    <mdui-menu-item value="120">Every 2 Hours</mdui-menu-item>
-                                    <mdui-menu-item value="180">Every 3 Hours</mdui-menu-item>
-                                    <mdui-menu-item value="240">Every 4 Hours</mdui-menu-item>
-                                    <mdui-menu-item value="300">Every 5 Hours</mdui-menu-item>
-                                    <mdui-menu-item value="360">Every 6 Hours</mdui-menu-item>
-                                    <mdui-menu-item value="720">Every 12 Hours</mdui-menu-item>
+                                    <mdui-menu-item value="0"
+                                        >Off</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="15"
+                                        >Every 15 Mins</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="30"
+                                        >Every 30 Mins</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="45"
+                                        >Every 45 Mins</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="60"
+                                        >Every 1 Hour</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="120"
+                                        >Every 2 Hours</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="180"
+                                        >Every 3 Hours</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="240"
+                                        >Every 4 Hours</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="300"
+                                        >Every 5 Hours</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="360"
+                                        >Every 6 Hours</mdui-menu-item
+                                    >
+                                    <mdui-menu-item value="720"
+                                        >Every 12 Hours</mdui-menu-item
+                                    >
                                 </mdui-select>
                             </div>
                         </div>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
-                        <mdui-button
-                            variant="tonal"
-                            id="test-wiper-btn"
-                        >Test Wiper</mdui-button>
-                        <mdui-button
-                            variant="tonal"
-                            id="rotate-btn"
-                        >Rotate</mdui-button>
+                    <div
+                        style="
+                            display: flex;
+                            flex-direction: column;
+                            gap: 12px;
+                            margin-top: 24px;
+                        "
+                    >
+                        <mdui-button variant="tonal" id="test-wiper-btn"
+                            >Test Wiper</mdui-button
+                        >
+                        <mdui-button variant="tonal" id="rotate-btn"
+                            >Rotate</mdui-button
+                        >
 
-                        <mdui-button
-                            variant="outlined"
-                            id="reload-btn"
-                        >Reload Page</mdui-button>
-                        <mdui-button
-                            variant="filled"
-                            id="restart-webserver-btn"
-                        >Restart Kinacam</mdui-button>
-                        <mdui-button
-                            variant="filled"
-                            id="restart-pi-btn"
-                        >Restart Pi</mdui-button>
-                        <mdui-button
-                            variant="filled"
-                            id="shutdown-pi-btn"
-                        >Shutdown Pi</mdui-button>
+                        <mdui-button variant="outlined" id="reload-btn"
+                            >Reload Page</mdui-button
+                        >
+                        <mdui-button variant="filled" id="restart-webserver-btn"
+                            >Restart Kinacam</mdui-button
+                        >
+                        <mdui-button variant="filled" id="restart-pi-btn"
+                            >Restart Pi</mdui-button
+                        >
+                        <mdui-button variant="filled" id="shutdown-pi-btn"
+                            >Shutdown Pi</mdui-button
+                        >
                     </div>
                     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
                 </mdui-card>

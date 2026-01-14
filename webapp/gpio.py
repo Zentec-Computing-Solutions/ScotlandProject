@@ -17,14 +17,3 @@ class KinacamLED:
     def is_on(self):
         return self.led.is_active
 
-
-class KinacamWiper:
-    def __init__(self, pin=5):
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(pin, GPIO.OUT)
-
-    def wipe(self):
-        GPIO.output(5, GPIO.HIGH)
-        info("WIPING!")
-        time.sleep(0.2)
-        GPIO.output(5, GPIO.LOW)

@@ -23,10 +23,9 @@ picam2.configure(picam2.create_video_configuration(
 picam2.start()
 
 # Initialize components (routes, socketio handlers)
-wiper = KinacamWiper(5)
 red_led = KinacamLED(17)
 init_routes(app, picam2, red_led)
-init_socketio(socketio, picam2, red_led, wiper)
+init_socketio(socketio, picam2, red_led)
 
 # Set pin 22 to high to enable ethernet connection
 GPIO.setmode(GPIO.BCM)

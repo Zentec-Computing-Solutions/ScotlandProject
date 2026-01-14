@@ -1,6 +1,5 @@
 from flask import Response, render_template
 from camera_handler import new_gen_frames
-from wiper_timer import get_current_interval
 
 
 def init_routes(app, picam2, red_led):
@@ -19,6 +18,5 @@ def init_routes(app, picam2, red_led):
     def inital_data():
         data = {
             "led_on": red_led.is_on(),
-            "timer_interval": get_current_interval()
         }
         return data

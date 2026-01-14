@@ -33,11 +33,6 @@ function power(value) {
     });
 }
 
-function wiperTimer(time) {
-    console.log(time);
-    socket.emit("wiper", { time: time });
-}
-
 function restartWebserver() {
     mdui.confirm({
         headline: "Restart Webserver",
@@ -56,15 +51,6 @@ socket.on("led", function (data) {
     led.checked = data.checked;
 });
 
-socket.on("wiper", function (data) {
-    const wiperSelect = document.getElementById("wiper-select");
-    timerInterval = parseInt(data.time);
-    if (timerInterval === null) {
-        wiperSelect.value = "0";
-    } else {
-        wiperSelect.value = timerInterval.toString();
-    }
-});
 
 // SETTINGS
 function updateSetting(settingName, settingValue) {
@@ -93,9 +79,6 @@ setupSlider("saturation", "saturationSlider");
 setupSlider("sharpness", "sharpnessSlider");
 
 // BUTTONS
-function testWiper() {
-    socket.emit("wiper", { time: -1 });
-}
 
 function cameraEnabled(checked) {
     const video_feed = document.getElementById("video_feed");
@@ -124,12 +107,7 @@ function getInitalData() {
     fetch("/inital_data").then((response) => {
         response.json().then((data) => {
             console.log(data);
-            const wiperSelect = document.getElementById("wiper-select");
-            if (data.timer_interval === null) {
-                wiperSelect.value = "0";
-            } else {
-                wiperSelect.value = data.timer_interval.toString();
-            }
+            
         });
     });
 }
@@ -139,9 +117,6 @@ window.addEventListener("DOMContentLoaded", function () {
     getInitalData();
 
     // Button click handlers
-    document
-        .getElementById("test-wiper-btn")
-        .addEventListener("click", testWiper);
     document
         .getElementById("rotate-btn")
         .addEventListener("click", rotateVideo);
@@ -162,9 +137,4 @@ window.addEventListener("DOMContentLoaded", function () {
         cameraEnabled(e.target.checked);
     });
 
-    // Wiper select handler
-    const wiperSelect = document.getElementById("wiper-select");
-    wiperSelect.addEventListener("change", (e) => {
-        wiperTimer(e.target.value);
-    });
 });

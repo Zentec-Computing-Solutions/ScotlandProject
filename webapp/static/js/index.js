@@ -1,5 +1,21 @@
 const socket = io();
 const dropdownIndexArray = [0, 15, 30, 45, 60, 120, 180, 240, 300, 360, 720];
+const sampleConfirmTimers = {};
+const sampleDefaultLabels = {};
+
+function disableOtherSampleButtons(activeId) {
+    document.querySelectorAll(".sample-button").forEach((btn) => {
+        if (btn.id !== activeId) {
+            btn.disabled = true;
+        }
+    });
+}
+
+function enableAllSampleButtons() {
+    document.querySelectorAll(".sample-button").forEach((btn) => {
+        btn.disabled = false;
+    });
+}
 
 let rotation = 0;
 function rotateVideo() {
@@ -16,20 +32,20 @@ function rotateVideo() {
         rotation = 0;
     }
     console.log(rotation);
-    document.getElementById(
-        "video-container-id"
-    ).style.transform = `rotate(${rotation}deg)`;
+    document.getElementById("video-container-id").style.transform =
+        `rotate(${rotation}deg)`;
 }
 
 function power(value) {
     mdui.confirm({
         headline: "Confirm Action",
-        description: `Your Pi is about to ${value}. Are you sure?`,
+        description: `Your host device is about to ${value}. Are you sure?`,
         confirmText: "Yes",
         cancelText: "No",
         onConfirm: () => {
             socket.emit("power", { value: value });
         },
+        onCancel: () => {},
     });
 }
 
@@ -43,14 +59,53 @@ function restartWebserver() {
         onConfirm: () => {
             socket.emit("restart_webserver");
         },
+        onCancel: () => {},
     });
+}
+
+function confirmSampleButton(buttonNumber) {
+    const elementId = "sample-button" + buttonNumber;
+    const buttonEl = document.getElementById(elementId);
+
+    if (!buttonEl) {
+        return;
+    }
+
+    const defaultLabel =
+        sampleDefaultLabels[elementId] || buttonEl.textContent.trim();
+    sampleDefaultLabels[elementId] = defaultLabel;
+
+    const pending = buttonEl.dataset.confirming === "true";
+
+    if (pending) {
+        clearTimeout(sampleConfirmTimers[elementId]);
+        buttonEl.dataset.confirming = "false";
+        buttonEl.textContent = defaultLabel;
+        delete sampleConfirmTimers[elementId];
+        enableAllSampleButtons();
+        completeSampleAction(buttonNumber);
+        return;
+    }
+
+    buttonEl.dataset.confirming = "true";
+    buttonEl.textContent = "Confirm?";
+    disableOtherSampleButtons(elementId);
+    sampleConfirmTimers[elementId] = setTimeout(() => {
+        buttonEl.dataset.confirming = "false";
+        buttonEl.textContent = defaultLabel;
+        enableAllSampleButtons();
+        delete sampleConfirmTimers[elementId];
+    }, 3000);
+}
+
+function completeSampleAction(buttonNumber) {
+    socket.emit("sample_button_confirmed", { button: buttonNumber });
 }
 
 socket.on("led", function (data) {
     const led = document.getElementById("led");
     led.checked = data.checked;
 });
-
 
 // SETTINGS
 function updateSetting(settingName, settingValue) {
@@ -69,8 +124,11 @@ function setupSlider(settingName, sliderId) {
     });
 
     slider.addEventListener("change", function () {
+        console.log(slider.value);
         updateSetting(settingName, parseFloat(slider.value));
     });
+
+    slider.labelFormatter = (value) => value.toFixed(1);
 }
 
 setupSlider("brightness", "brightnessSlider");
@@ -107,7 +165,6 @@ function getInitalData() {
     fetch("/inital_data").then((response) => {
         response.json().then((data) => {
             console.log(data);
-            
         });
     });
 }
@@ -115,26 +172,4 @@ function getInitalData() {
 // Setup event listeners
 window.addEventListener("DOMContentLoaded", function () {
     getInitalData();
-
-    // Button click handlers
-    document
-        .getElementById("rotate-btn")
-        .addEventListener("click", rotateVideo);
-    document.getElementById("reload-btn").addEventListener("click", reload);
-    document
-        .getElementById("restart-webserver-btn")
-        .addEventListener("click", restartWebserver);
-    document
-        .getElementById("restart-pi-btn")
-        .addEventListener("click", () => power("restart"));
-    document
-        .getElementById("shutdown-pi-btn")
-        .addEventListener("click", () => power("shutdown"));
-
-    // Camera switch handler
-    const cameraSwitch = document.getElementById("camera_enabled");
-    cameraSwitch.addEventListener("change", (e) => {
-        cameraEnabled(e.target.checked);
-    });
-
 });

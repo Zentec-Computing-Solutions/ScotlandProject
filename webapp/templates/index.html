@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="mdui-theme-dark">
     <head>
         <meta charset="UTF-8" />
@@ -20,12 +20,102 @@
             rel="shortcut icon"
             href="{{ url_for('static', filename='img/favicon.ico') }}"
         />
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+        />
     </head>
 
     <body>
         <script>
-            mdui.setColorScheme('#5aaedb');
+            mdui.setColorScheme("#5aaedb");
         </script>
-        <mdui-button>Click Me</mdui-button>
+        <div class="horizontal">
+            <mdui-card
+                variant="filled"
+                class="video-feed-outer"
+                id="video-container-id"
+            >
+                <mdui-dropdown trigger="contextmenu" open-on-pointer>
+                    <img slot="trigger" id="video_feed" src="/video_feed" />
+                    <mdui-menu>
+                        <mdui-button-icon>
+                            <mdui-icon name="rotate_right" id="rotate-btn">
+                            </mdui-icon>
+                        </mdui-button-icon>
+                    </mdui-menu>
+                </mdui-dropdown>
+            </mdui-card>
+            <mdui-card variant="filled" class="control-panel">
+                <mdui-card variant="elevated" class="sample-controls">
+                    <mdui-button
+                        id="sample-button1"
+                        class="sample-button"
+                        onclick="confirmSampleButton(1)"
+                        >1</mdui-button
+                    >
+                    <mdui-button
+                        id="sample-button2"
+                        class="sample-button"
+                        onclick="confirmSampleButton(2)"
+                        >2</mdui-button
+                    >
+                    <mdui-button
+                        id="sample-button3"
+                        class="sample-button"
+                        onclick="confirmSampleButton(3)"
+                        >3</mdui-button
+                    >
+                </mdui-card>
+                <mdui-card variant="elevated" class="slider-card">
+                    <mdui-slider
+                        id="brightnessSlider"
+                        value="0"
+                        min="-1"
+                        max="1"
+                        step="0.1"
+                    ></mdui-slider>
+                    <mdui-slider
+                        id="contrastSlider"
+                        value="1"
+                        min="0"
+                        max="8"
+                        step="0.1"
+                    ></mdui-slider>
+                    <mdui-slider
+                        id="saturationSlider"
+                        value="1"
+                        min="0"
+                        max="4"
+                        step="0.1"
+                    ></mdui-slider>
+                    <mdui-slider
+                        id="sharpnessSlider"
+                        value="1"
+                        min="0"
+                        max="16"
+                    ></mdui-slider>
+                </mdui-card>
+                <mdui-button
+                    class="button"
+                    title="Restarts the software"
+                    onclick="restartWebserver()"
+                    >Restart Project</mdui-button
+                >
+                <mdui-button
+                    class="button"
+                    title="Restarts the host device"
+                    onclick="power('restart')"
+                    >Restart Host</mdui-button
+                >
+                <mdui-button
+                    class="button"
+                    title="Powers down the host device"
+                    onclick="power('shutdown')"
+                    >Shutdown Host</mdui-button
+                >
+            </mdui-card>
+        </div>
+        <script src="{{ url_for('static',filename='js/index.js') }}"></script>
     </body>
 </html>

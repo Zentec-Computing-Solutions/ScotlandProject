@@ -29,6 +29,11 @@ def init_socketio(socketio, picam2, red_led):
     @socketio.on("restart_webserver")
     def restart_webserver():
         subprocess.run(["sudo", "systemctl", "restart", "kinacam"])
+        
+    @socketio.on("sample_button_confirmed")
+    def sample_button_confirmed(data):
+        button = int(data["button"])
+        info(f"Button {button} pressed - taking picture")
 
     @socketio.on("led")
     def led(data):

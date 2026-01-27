@@ -4,7 +4,29 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Scotland Project | Control Panel</title>
+        <title>SIBS V4.0 | Control Panel</title>
+
+        <!-- PWA Manifest -->
+        <link
+            rel="manifest"
+            href="{{ url_for('static', filename='manifest.json') }}"
+        />
+
+        <!-- iOS PWA Support -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+        />
+        <meta name="apple-mobile-web-app-title" content="SIBS V4.0" />
+        <link
+            rel="apple-touch-icon"
+            href="{{ url_for('static', filename='img/favicon.ico') }}"
+        />
+
+        <!-- Theme Color -->
+        <meta name="theme-color" content="#5aaedb" />
+
         <script src="{{ url_for('static',filename='lib/socket.io.min.js') }}"></script>
         <link
             rel="stylesheet"
@@ -30,7 +52,7 @@
         <script>
             mdui.setColorScheme("#5aaedb");
         </script>
-        <div class="horizontal">
+        <div class="vertical">
             <mdui-card
                 variant="filled"
                 class="video-feed-outer"
@@ -117,5 +139,28 @@
             </mdui-card>
         </div>
         <script src="{{ url_for('static',filename='js/index.js') }}"></script>
+
+        <!-- Register Service Worker -->
+        <script>
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", function () {
+                    navigator.serviceWorker
+                        .register(
+                            "{{ url_for('static', filename='js/service-worker.js') }}",
+                        )
+                        .then(function (registration) {
+                            console.log(
+                                "ServiceWorker registration successful",
+                            );
+                        })
+                        .catch(function (err) {
+                            console.log(
+                                "ServiceWorker registration failed: ",
+                                err,
+                            );
+                        });
+                });
+            }
+        </script>
     </body>
 </html>

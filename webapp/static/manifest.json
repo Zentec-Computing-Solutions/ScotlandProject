@@ -1,0 +1,29 @@
+{
+    "name": "SIBS V4.0 Control Panel",
+    "short_name": "SIBS V4.0",
+    "description": "Camera and device control panel",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#161a29",
+    "theme_color": "#5aaedb",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "/static/img/SIBS_48x48.png",
+            "sizes": "48x48",
+            "type": "image/x-icon"
+        },
+        {
+            "src": "/static/img/SIBS_192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/img/SIBS_512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

@@ -1,13 +1,13 @@
-import RPi.GPIO as GPIO
-import time
+from picamera2_webstream import FFmpegStream, create_ffmpeg_app
 
-GPIO.setmode(GPIO.BCM)  # Use BCM numbering
-GPIO.setup(5, GPIO.OUT)  # Set pin 22 as an output
+stream = FFmpegStream(
+    width=1280,
+    height=720,
+    framerate=30,
+    device='/dev/video0'
+).start()
 
-i = 2
-while i > 0:
-    GPIO.output(5, GPIO.HIGH)
-    print(i)
-    i -= 1
-    time.sleep(0.1)
-GPIO.output(5, GPIO.LOW)
+app = create_ffmpeg_app(stream)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=443, ssl_context=('cert.pem', 'key.pem'))

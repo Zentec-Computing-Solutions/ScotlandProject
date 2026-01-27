@@ -17,9 +17,9 @@ body {
     color: var(--light-shades);
 }
 
-.horizontal {
+.vertical {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
 }
 
@@ -33,7 +33,7 @@ body {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    width: 20vw;
+    width: 100vw;
     height: calc(100vh - 20px);
 }
 
@@ -54,8 +54,8 @@ body {
 
 .video-feed-outer {
     padding: 20px;
-    width: 80vw;
-    height: calc(100vh - 20px);
+
+    height: calc(60vh - 20px);
 }
 
 .sample-button {

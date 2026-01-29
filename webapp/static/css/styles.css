@@ -23,18 +23,22 @@ body {
     gap: 10px;
 }
 
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
 .button {
-    margin-top: 20px;
+    margin-top: 10px;
     width: 100%;
     height: 5vh;
 }
 
 .control-panel {
     display: flex;
-    flex-direction: column;
     padding: 20px;
-    width: 100vw;
-    height: calc(100vh - 20px);
+    width: calc(100vw - 15px);
 }
 
 .sample-controls {
@@ -42,23 +46,57 @@ body {
     grid-template-rows: repeat(3, 1fr);
     gap: 10px;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-left: 20px;
+    width: 20vw;
 }
 
 #video_feed {
     display: block;
-    width: 100%;
+    height: 100%;
     object-fit: contain;
     border-radius: 0.75rem;
 }
 
 .video-feed-outer {
     padding: 20px;
-
-    height: calc(60vh - 20px);
+    height: calc(67vh - 20px);
+    display: flex;
+    justify-content: center;
 }
 
 .sample-button {
-    width: 100%;
+    margin-top: 10px;
+    margin-right: 20px;
+    width: 80%;
     height: 5vh;
+}
+
+.sample-button-enable {
+    height: 5vh;
+    margin-top: 10px;
+}
+
+.slider-card {
+    width: 60vw;
+}
+
+.button-card {
+    padding-right: 20px;
+    width: 20vw;
+}
+
+label {
+    margin: 10px;
+    margin-left: 20px;
+    margin-bottom: 0px;
+    display: inline-block;
+}
+
+mdui-slider {
+    margin-bottom: 0px;
+}
+
+p {
+    margin-bottom: 0px;
+    margin-top: 5px;
 }

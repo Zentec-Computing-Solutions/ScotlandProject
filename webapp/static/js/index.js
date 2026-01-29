@@ -1,7 +1,4 @@
 const socket = io();
-const dropdownIndexArray = [0, 15, 30, 45, 60, 120, 180, 240, 300, 360, 720];
-const sampleConfirmTimers = {};
-const sampleDefaultLabels = {};
 
 function disableOtherSampleButtons(activeId) {
     document.querySelectorAll(".sample-button").forEach((btn) => {
@@ -63,7 +60,7 @@ function restartWebserver() {
     });
 }
 
-function confirmSampleButton(buttonNumber) {
+/*function confirmSampleButton(buttonNumber) {
     const elementId = "sample-button" + buttonNumber;
     const buttonEl = document.getElementById(elementId);
 
@@ -97,9 +94,31 @@ function confirmSampleButton(buttonNumber) {
         delete sampleConfirmTimers[elementId];
     }, 3000);
 }
-
-function completeSampleAction(buttonNumber) {
+*/
+function confirmSampleButton(buttonNumber) {
+    let buttonEnable = document.getElementById(
+        "sample-button" + buttonNumber + "-enable",
+    );
+    let button = document.getElementById("sample-button" + buttonNumber);
+    button.disabled = true;
+    buttonEnable.disabled = false;
+    //buttonEnable.icon = "lock";
     socket.emit("sample_button_confirmed", { button: buttonNumber });
+}
+
+function toggleSampleButton(buttonNumber) {
+    let buttonEnable = document.getElementById(
+        "sample-button" + buttonNumber + "-enable",
+    );
+    buttonEnable.disabled = true;
+    //buttonEnable.icon = "lock-open";
+    let button = document.getElementById("sample-button" + buttonNumber);
+    button.disabled = !button.disabled;
+    setTimeout(() => {
+        button.disabled = true;
+        buttonEnable.disabled = false;
+        //buttonEnable.icon = "lock";
+    }, 3000);
 }
 
 socket.on("led", function (data) {
@@ -168,6 +187,24 @@ function getInitalData() {
         });
     });
 }
+
+function checkVideoFeed() {
+    const video_feed = document.getElementById("video_feed");
+    if (video_feed.src && video_feed.src !== "") {
+        video_feed.onload = () => {
+            // Video is loading successfully
+        };
+        video_feed.onerror = () => {
+            console.error("Video feed failed to load");
+            location.reload();
+        };
+    } else {
+        console.warn("Video feed src is empty");
+        location.reload();
+    }
+}
+
+setInterval(checkVideoFeed, 1000);
 
 // Setup event listeners
 window.addEventListener("DOMContentLoaded", function () {

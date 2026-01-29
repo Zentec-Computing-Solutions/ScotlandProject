@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>SIBS V4.0 | Control Panel</title>
+        <title>SIBS V4.0</title>
 
         <!-- PWA Manifest -->
         <link
@@ -58,38 +58,44 @@
                 class="video-feed-outer"
                 id="video-container-id"
             >
-                <mdui-dropdown trigger="contextmenu" open-on-pointer>
-                    <img slot="trigger" id="video_feed" src="/video_feed" />
-                    <mdui-menu>
-                        <mdui-button-icon>
-                            <mdui-icon name="rotate_right" id="rotate-btn">
-                            </mdui-icon>
-                        </mdui-button-icon>
-                    </mdui-menu>
-                </mdui-dropdown>
+                <img id="video_feed" src="/video_feed" />
             </mdui-card>
+
             <mdui-card variant="filled" class="control-panel">
-                <mdui-card variant="elevated" class="sample-controls">
+                <div class="vertical button-card">
                     <mdui-button
-                        id="sample-button1"
-                        class="sample-button"
-                        onclick="confirmSampleButton(1)"
-                        >1</mdui-button
+                        class="button"
+                        title="Reloads the webpage"
+                        onclick="reload()"
+                        >Reload Page</mdui-button
                     >
                     <mdui-button
-                        id="sample-button2"
-                        class="sample-button"
-                        onclick="confirmSampleButton(2)"
-                        >2</mdui-button
+                        class="button"
+                        title="Restarts the SIBS software"
+                        onclick="restartWebserver()"
+                        >Restart SIBS</mdui-button
                     >
                     <mdui-button
-                        id="sample-button3"
-                        class="sample-button"
-                        onclick="confirmSampleButton(3)"
-                        >3</mdui-button
+                        class="button"
+                        title="Restarts the host device"
+                        onclick="power('restart')"
+                        >Restart Host</mdui-button
                     >
-                </mdui-card>
+                    <!--<mdui-button
+                        class="button"
+                        title="Powers down the host device"
+                        onclick="power('shutdown')"
+                        >Shutdown Host</mdui-button
+                    >-->
+                    <p>
+                        Nigel Keely ctal.<br />
+                        Zentec Computing Solutions Ltd.<br />
+                        Marine Design Engineering Ltd.
+                    </p>
+                </div>
+
                 <mdui-card variant="elevated" class="slider-card">
+                    <label for="brightnessSlider">Brightness</label>
                     <mdui-slider
                         id="brightnessSlider"
                         value="0"
@@ -97,6 +103,8 @@
                         max="1"
                         step="0.1"
                     ></mdui-slider>
+
+                    <label for="contrastSlider">Contrast</label>
                     <mdui-slider
                         id="contrastSlider"
                         value="1"
@@ -104,6 +112,8 @@
                         max="8"
                         step="0.1"
                     ></mdui-slider>
+
+                    <label for="saturationSlider">Saturation</label>
                     <mdui-slider
                         id="saturationSlider"
                         value="1"
@@ -111,6 +121,8 @@
                         max="4"
                         step="0.1"
                     ></mdui-slider>
+
+                    <label for="sharpnessSlider">Sharpness</label>
                     <mdui-slider
                         id="sharpnessSlider"
                         value="1"
@@ -118,24 +130,59 @@
                         max="16"
                     ></mdui-slider>
                 </mdui-card>
-                <mdui-button
-                    class="button"
-                    title="Restarts the software"
-                    onclick="restartWebserver()"
-                    >Restart Project</mdui-button
-                >
-                <mdui-button
-                    class="button"
-                    title="Restarts the host device"
-                    onclick="power('restart')"
-                    >Restart Host</mdui-button
-                >
-                <mdui-button
-                    class="button"
-                    title="Powers down the host device"
-                    onclick="power('shutdown')"
-                    >Shutdown Host</mdui-button
-                >
+                <mdui-card variant="elevated" class="sample-controls">
+                    <div class="horizontal">
+                        <mdui-button-icon
+                            variant="tonal"
+                            icon="lock"
+                            id="sample-button1-enable"
+                            class="sample-button-enable"
+                            onclick="toggleSampleButton(1)"
+                        >
+                        </mdui-button-icon>
+                        <mdui-button
+                            id="sample-button1"
+                            class="sample-button"
+                            onclick="confirmSampleButton(1)"
+                            disabled
+                            >1</mdui-button
+                        >
+                    </div>
+                    <div class="horizontal">
+                        <mdui-button-icon
+                            variant="tonal"
+                            icon="lock"
+                            id="sample-button2-enable"
+                            class="sample-button-enable"
+                            onclick="toggleSampleButton(2)"
+                        >
+                        </mdui-button-icon>
+                        <mdui-button
+                            id="sample-button2"
+                            class="sample-button"
+                            onclick="confirmSampleButton(2)"
+                            disabled
+                            >2</mdui-button
+                        >
+                    </div>
+                    <div class="horizontal">
+                        <mdui-button-icon
+                            variant="tonal"
+                            icon="lock"
+                            id="sample-button3-enable"
+                            class="sample-button-enable"
+                            onclick="toggleSampleButton(3)"
+                        >
+                        </mdui-button-icon>
+                        <mdui-button
+                            id="sample-button3"
+                            class="sample-button"
+                            onclick="confirmSampleButton(3)"
+                            disabled
+                            >3</mdui-button
+                        >
+                    </div>
+                </mdui-card>
             </mdui-card>
         </div>
         <script src="{{ url_for('static',filename='js/index.js') }}"></script>

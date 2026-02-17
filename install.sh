@@ -60,15 +60,14 @@ pip install numpy
 
 printf "${Cyan}Adding service to systemd...\n"
 # Install and start the service
-if [ -f /etc/systemd/system/kinacam.service ]; then
-    sudo systemctl stop kinacam.service
-    sudo systemctl disable kinacam.service
+if [ -f /etc/systemd/system/sibs.service ]; then
+    sudo systemctl stop sibs.service
+    sudo systemctl disable sibs.service
 else
-    sudo \cp -f ./kinacam.service /etc/systemd/system/kinacam.service
+    sudo \cp -f ./sibs.service /etc/systemd/system/sibs.service
 fi
 
-sudo systemctl enable kinacam.service
-sudo systemctl start kinacam.service
+sudo systemctl enable sibs.service
+sudo systemctl start sibs.service
 printf "${Green}Service added to systemd.\n"
-printf "${Green}Kinacam install complete, reboot to start Kinacam.\n"
-
+printf "${Green}SIBS install complete, reboot to start SIBS.\n"

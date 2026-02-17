@@ -1,10 +1,10 @@
 [Unit]
-Description=Start Kinacam on Startup
+Description=Start SIBS on Startup
 After=network.target
 
 [Service]
 Type=simple
-ExecStart=/home/admin/Fisheye/run.sh
+ExecStart=/home/admin/ScotlandProject/run.sh
 Restart=on-failure
 
 [Install]

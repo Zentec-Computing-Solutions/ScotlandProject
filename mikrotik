@@ -1,0 +1,25 @@
+# jan/02/1970 00:27:23 by RouterOS 6.49.11
+# software id = ZKI6-XILV
+#
+# model = RBmAP2nD
+# serial number = HG409MEY1RH
+/interface bridge
+add name=Bridge
+/interface wireless
+set [ find default-name=wlan1 ] band=2ghz-b/g/n disabled=no mode=ap-bridge ssid=MikroTik wireless-protocol=802.11
+/interface wireless security-profiles
+set [ find default=yes ] supplicant-identity=MikroTik
+/ip pool
+add name=default-dhcp ranges=192.168.5.10-192.168.5.254
+/ip dhcp-server
+add address-pool=default-dhcp disabled=no interface=Bridge name=defconf
+/interface bridge port
+add bridge=Bridge interface=wlan1
+add bridge=Bridge interface=ether1
+/ip address
+add address=192.168.5.1/24 interface=Bridge network=192.168.5.0
+/ip dhcp-server lease
+add address=192.168.5.21 client-id=1:3e:a1:2c:b2:32:f6 mac-address=3E:A1:2C:B2:32:F6 server=defconf
+add address=192.168.5.254 client-id=1:ce:79:8:c7:b9:10 mac-address=CE:79:08:C7:B9:10 server=defconf
+/ip dhcp-server network
+add address=192.168.5.0/24 dns-server=192.168.5.1 gateway=192.168.5.1

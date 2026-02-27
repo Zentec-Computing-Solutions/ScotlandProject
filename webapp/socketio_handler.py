@@ -1,6 +1,7 @@
 import subprocess
 from threading import Thread
-from loggerthyst import info
+from loggerthyst import info, error
+from sampler_handler import trigger_sample
 
 def init_socketio(socketio, picam2, red_led):
 
@@ -33,7 +34,13 @@ def init_socketio(socketio, picam2, red_led):
     @socketio.on("sample_button_confirmed")
     def sample_button_confirmed(data):
         button = int(data["button"])
-        info(f"Button {button} pressed - taking picture")
+        info(f"Button {button} pressed")
+        # Trigger the sampler via SSC trigger controller
+        success = trigger_sample(button)
+        if success:
+            info(f"Successfully triggered sampler port {button}")
+        else:
+            error(f"Failed to trigger sampler port {button}")
 
     @socketio.on("led")
     def led(data):

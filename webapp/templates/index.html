@@ -130,6 +130,20 @@
                         max="16"
                     ></mdui-slider>
                 </mdui-card>
+                <mdui-card variant="elevated" class="slider-card">
+                    <mdui-switch
+                        id="ledSwitch"
+                        label="LED On/Off"
+                        onchange="ledToggle(this)"
+                    ></mdui-switch>
+                    <label for="ledBrightness">LED Brightness</label>
+                    <mdui-slider
+                        id="ledBrightnessSlider"
+                        value="5"
+                        min="5"
+                        max="70"
+                    ></mdui-slider>
+                </mdui-card>
                 <mdui-card variant="elevated" class="sample-controls">
                     <div class="horizontal">
                         <mdui-button-icon

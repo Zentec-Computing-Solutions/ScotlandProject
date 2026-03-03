@@ -60,41 +60,6 @@ function restartWebserver() {
     });
 }
 
-/*function confirmSampleButton(buttonNumber) {
-    const elementId = "sample-button" + buttonNumber;
-    const buttonEl = document.getElementById(elementId);
-
-    if (!buttonEl) {
-        return;
-    }
-
-    const defaultLabel =
-        sampleDefaultLabels[elementId] || buttonEl.textContent.trim();
-    sampleDefaultLabels[elementId] = defaultLabel;
-
-    const pending = buttonEl.dataset.confirming === "true";
-
-    if (pending) {
-        clearTimeout(sampleConfirmTimers[elementId]);
-        buttonEl.dataset.confirming = "false";
-        buttonEl.textContent = defaultLabel;
-        delete sampleConfirmTimers[elementId];
-        enableAllSampleButtons();
-        completeSampleAction(buttonNumber);
-        return;
-    }
-
-    buttonEl.dataset.confirming = "true";
-    buttonEl.textContent = "Confirm?";
-    disableOtherSampleButtons(elementId);
-    sampleConfirmTimers[elementId] = setTimeout(() => {
-        buttonEl.dataset.confirming = "false";
-        buttonEl.textContent = defaultLabel;
-        enableAllSampleButtons();
-        delete sampleConfirmTimers[elementId];
-    }, 3000);
-}
-*/
 function confirmSampleButton(buttonNumber) {
     let buttonEnable = document.getElementById(
         "sample-button" + buttonNumber + "-enable",
@@ -122,7 +87,7 @@ function toggleSampleButton(buttonNumber) {
 }
 
 socket.on("led", function (data) {
-    const led = document.getElementById("led");
+    const led = document.getElementById("ledSwitch");
     led.checked = data.checked;
 });
 
@@ -139,7 +104,7 @@ function setupSlider(settingName, sliderId) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
             updateSetting(settingName, parseFloat(slider.value));
-        }, 50);
+        }, 100);
     });
 
     slider.addEventListener("change", function () {
@@ -154,6 +119,7 @@ setupSlider("brightness", "brightnessSlider");
 setupSlider("contrast", "contrastSlider");
 setupSlider("saturation", "saturationSlider");
 setupSlider("sharpness", "sharpnessSlider");
+setupSlider("ledBrightness", "ledBrightnessSlider");
 
 // BUTTONS
 
@@ -184,8 +150,30 @@ function getInitalData() {
     fetch("/inital_data").then((response) => {
         response.json().then((data) => {
             console.log(data);
+            document.getElementById("ledSwitch").checked = data.led_on;
+            document.getElementById("ledBrightnessSlider").disabled =
+                !data.led_on;
         });
     });
+}
+
+function ledToggle(checkbox) {
+    const checked = checkbox.checked;
+    const data = { checked: checked };
+    console.log(data);
+    socket.emit("led", data);
+    if (checked) {
+        const ledBrightnessSlider = document.getElementById(
+            "ledBrightnessSlider",
+        );
+        ledBrightnessSlider.disabled = false;
+        ledBrightnessSlider.value = 5;
+    } else {
+        const ledBrightnessSlider = document.getElementById(
+            "ledBrightnessSlider",
+        );
+        ledBrightnessSlider.disabled = true;
+    }
 }
 
 function checkVideoFeed() {

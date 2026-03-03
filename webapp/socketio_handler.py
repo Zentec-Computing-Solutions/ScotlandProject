@@ -1,6 +1,6 @@
 import subprocess
 from threading import Thread
-from loggerthyst import info
+from loggerthyst import info, warn
 from sampler_handler import send_sampler_trigger
 
 def init_socketio(socketio, picam2, led_light):
@@ -17,6 +17,10 @@ def init_socketio(socketio, picam2, led_light):
             picam2.set_controls({"Saturation": float(setting_value)})
         elif setting_name == "sharpness":
             picam2.set_controls({"Sharpness": float(setting_value)})
+        elif setting_name == "ledBrightness":
+            led_light.set_brightness(float(setting_value))
+        else:
+            warn(f"Unknown setting name: {setting_name}")
 
     @socketio.on("power")
     def power(data):

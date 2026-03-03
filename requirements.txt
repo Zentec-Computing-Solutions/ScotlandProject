@@ -5,3 +5,4 @@ Flask_SocketIO==5.4.1
 gpiozero==2.0.1
 opencv_python==4.10.0.84
 picamera2==0.3.21
+pyserial==3.5

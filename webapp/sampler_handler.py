@@ -13,20 +13,20 @@ def send_sampler_trigger(sampler, port="/dev/serial0", baud=9600,
     Returns True on success, False on failure.
     """
     if sampler not in (1, 2, 3):
-        error("send_sampler_trigger: invalid sampler %r (must be 1,2,3)", sampler)
+        error(f"send_sampler_trigger: invalid sampler {sampler} (must be 1,2,3)")
         return False
 
     cmd_text = f"*SSCTRG{sampler}\r\n"
     cmd_bytes = cmd_text.encode("ascii")
 
-    info("send_sampler_trigger: sampler=%d port=%s baud=%d", sampler, port, baud)
+    info(f"send_sampler_trigger: sampler={sampler} port={port} baud={baud}")
     try:
         ser = serial.Serial(port, baud, timeout=read_timeout)
     except PermissionError as e:
-        fatal("Permission denied opening serial port %s: %s", port, e)
+        fatal(f"Permission denied opening serial port {port}: {e}")
         return False
     except serial.SerialException as e:
-        error("Could not open serial port %s: %s", port, e)
+        error(f"Could not open serial port {port}: {e}")
         return False
 
     try:
@@ -40,9 +40,9 @@ def send_sampler_trigger(sampler, port="/dev/serial0", baud=9600,
         try:
             ser.write(cmd_bytes)
             ser.flush()
-            info("Sent TX -> %s", cmd_text.replace("\r\n", "\\r\\n"))
+            info(f"Sent TX -> {cmd_text.replace(chr(13)+chr(10), '\\r\\n')}")
         except Exception as e:
-            error("Failed to write to serial port: %s", e)
+            error(f"Failed to write to serial port: {e}")
             return False
 
         # collect any unsolicited RX for a short window
@@ -52,21 +52,21 @@ def send_sampler_trigger(sampler, port="/dev/serial0", baud=9600,
             try:
                 waiting = ser.in_waiting or 0
             except (serial.SerialException, OSError) as e:
-                error("Error checking in_waiting: %s", e)
+                error(f"Error checking in_waiting: {e}")
                 break
 
             if waiting:
                 try:
                     chunk = ser.read(waiting)
                 except serial.SerialException as e:
-                    error("Serial read error: %s", e)
+                    error(f"Serial read error: {e}")
                     break
 
                 if chunk:
                     collected += chunk
                     time.sleep(0.01)
                 else:
-                    warn("read() returned no data though in_waiting=%d", waiting)
+                    warn(f"read() returned no data though in_waiting={waiting}")
                     break
             else:
                 time.sleep(0.02)
@@ -76,15 +76,15 @@ def send_sampler_trigger(sampler, port="/dev/serial0", baud=9600,
                 decoded = collected.decode("utf-8", errors="replace")
             except Exception:
                 decoded = repr(collected)
-            info("RX (serial unsolicited) from %s: %s", port, decoded)
+            info(f"RX (serial unsolicited) from {port}: {decoded}")
         else:
             info("No unsolicited RX received after TX.")
 
     finally:
         try:
             ser.close()
-            info("Closed serial port %s", port)
+            info(f"Closed serial port {port}")
         except Exception as e:
-            warn("Error closing serial port %s: %s", port, e)
+            warn(f"Error closing serial port {port}: {e}")
 
     return True

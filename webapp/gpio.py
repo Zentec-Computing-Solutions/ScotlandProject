@@ -1,12 +1,12 @@
-from gpiozero import LED
+from gpiozero import PWMLED
 from RPi import GPIO
 from loggerthyst import info
 import time
 
 
-class KinacamLED:
+class SIBSLED:
     def __init__(self, pin=17):
-        self.led: LED = LED(pin)
+        self.led: LED = PWMLED(pin)
 
     def on(self):
         self.led.on()

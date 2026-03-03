@@ -35,9 +35,9 @@ def init_socketio(socketio, picam2, red_led):
     def sample_button_confirmed(data):
         button = int(data["button"])
         if send_sampler_trigger(button):
-            info("Sampler trigger sent for button %d", button)
+            info(f"Sampler trigger sent for button {button}")
         else:
-            info("Failed to send sampler trigger for button %d", button)
+            info(f"Failed to send sampler trigger for button {button}")
 
     @socketio.on("led")
     def led(data):

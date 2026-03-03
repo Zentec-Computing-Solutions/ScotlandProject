@@ -23,7 +23,7 @@ picam2.configure(picam2.create_video_configuration(
 picam2.start()
 
 # Initialize components (routes, socketio handlers)
-red_led = KinacamLED(17)
+red_led = SIBSLED(17)
 init_routes(app, picam2, red_led)
 init_socketio(socketio, picam2, red_led)
 

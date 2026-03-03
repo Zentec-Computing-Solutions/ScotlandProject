@@ -2,7 +2,7 @@ from flask import Response, render_template, jsonify, send_from_directory
 from camera_handler import new_gen_frames
 
 
-def init_routes(app, picam2, red_led):
+def init_routes(app, picam2, led_light):
     @app.route("/")
     def index():
         return render_template("index.html")
@@ -17,7 +17,7 @@ def init_routes(app, picam2, red_led):
     @app.route("/inital_data")
     def inital_data():
         data = {
-            "led_on": red_led.is_on(),
+            "led_on": led_light.is_on(),
         }
         return data
     

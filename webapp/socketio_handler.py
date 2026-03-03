@@ -3,7 +3,7 @@ from threading import Thread
 from loggerthyst import info
 from sampler_handler import send_sampler_trigger
 
-def init_socketio(socketio, picam2, red_led):
+def init_socketio(socketio, picam2, led_light):
 
     @socketio.on("update_setting")
     def update_setting(data):
@@ -43,8 +43,8 @@ def init_socketio(socketio, picam2, red_led):
     def led(data):
         led = bool(data["checked"])
         if led:
-            red_led.on()
+            led_light.on()
         else:
-            red_led.off()
+            led_light.off()
         socketio.emit("led", data, include_self=False)
         return led

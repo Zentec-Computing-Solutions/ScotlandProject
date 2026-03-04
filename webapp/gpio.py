@@ -1,11 +1,14 @@
 # sibs_led_simple.py
-from gpiozero import PWMLED, DigitalOutputDevice
+from rpi_hardware_pwm import PWM
+from RPi import GPIO
 from loggerthyst import info, warn, error, fatal
 import time
 
 # HAT pin assignments (BCM)
 DEFAULT_ENABLE_PIN = 12   # IO12   
-DEFAULT_PWM_PIN    = 13   # IO13
+DEFAULT_PWM_PIN    = 13   # IO13 (maps to PWM1)
+DEFAULT_PWM_CHIP   = 0    # PWM chip 0
+DEFAULT_PWM_CHANNEL = 1   # PWM1 channel (GPIO13)
 
 class SIBSLED:
     def __init__(self, pwm_pin=DEFAULT_PWM_PIN, enable_pin=DEFAULT_ENABLE_PIN,
@@ -13,12 +16,15 @@ class SIBSLED:
         self.start_pct = max(0.0, min(100.0, float(start_pct))) / 100.0
         self.max_pct = max(0.0, min(100.0, float(max_pct))) / 100.0
         self.freq = int(freq)
+        self.enable_pin = enable_pin
+        self.is_enabled = False
 
-        # Use gpiozero default backend (RPi.GPIO) — no pigpiod required
+        # Initialize hardware PWM (GPIO 13 = PWM1, chip 0, channel 1)
         try:
-            self.enable = DigitalOutputDevice(enable_pin, active_high=True,
-                                              initial_value=False)
-            self.led = PWMLED(pwm_pin, frequency=self.freq, initial_value=0.0)
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(enable_pin, GPIO.OUT, initial=GPIO.LOW)
+            self.pwm = PWM(DEFAULT_PWM_CHIP, DEFAULT_PWM_CHANNEL, frequency=self.freq)
+            self.pwm.start(0)  # Start with 0% duty
         except Exception as e:
             fatal(f"Could not initialize GPIO devices: {e}")
             raise
@@ -32,9 +38,10 @@ class SIBSLED:
             warn(f"Requested start_pct {start_val*100.0:.1f}% greater than max {self.max_pct*100.0:.1f}% — clamping")
             start_val = self.max_pct
         try:
-            self.enable.on()
+            GPIO.output(self.enable_pin, GPIO.HIGH)
             time.sleep(0.01)
-            self.led.value = start_val
+            self.pwm.ChangeDutyCycle(start_val * 100.0)
+            self.is_enabled = True
             info(f"LED enabled — start duty {start_val*100.0:.1f}%")
         except Exception as e:
             error(f"Error enabling LED: {e}")
@@ -51,7 +58,7 @@ class SIBSLED:
             warn(f"Requested {pctf:.1f}% > max {self.max_pct*100.0:.1f}%; clamping")
             val = self.max_pct
         try:
-            self.led.value = val
+            self.pwm.ChangeDutyCycle(val * 100.0)
             info(f"Brightness set to {val*100.0:.1f}%")
         except Exception as e:
             error(f"Error setting brightness to {val*100.0:.1f}%: {e}")
@@ -59,26 +66,23 @@ class SIBSLED:
 
     def off(self):
         try:
-            self.led.value = 0.0
+            self.pwm.ChangeDutyCycle(0)
             time.sleep(0.01)
-            self.enable.off()
+            GPIO.output(self.enable_pin, GPIO.LOW)
+            self.is_enabled = False
             info("LED disabled")
         except Exception as e:
             error(f"Error disabling LED: {e}")
             raise
 
     def is_on(self):
-        try:
-            return bool(self.enable.value)
-        except Exception:
-            return False
+        return self.is_enabled
 
     def close(self):
         try:
-            self.led.value = 0.0
-            self.enable.off()
-            self.led.close()
-            self.enable.close()
+            self.pwm.stop()
+            GPIO.output(self.enable_pin, GPIO.LOW)
+            GPIO.cleanup([self.enable_pin])
             info("SIBSLED closed")
         except Exception as e:
             warn(f"Error closing SIBSLED: {e}")

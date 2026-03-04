@@ -28,7 +28,7 @@ picam2.configure(picam2.create_video_configuration(
 picam2.start()
 
 # Initialize components (routes, socketio handlers)
-led_light = SIBSLED(17)
+led_light = SIBSLED()
 init_routes(app, picam2, led_light)
 init_socketio(socketio, picam2, led_light)
 

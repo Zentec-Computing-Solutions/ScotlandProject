@@ -4,7 +4,7 @@ from loggerthyst import info, warn, error, fatal
 import time
 
 # HAT pin assignments (BCM)
-DEFAULT_ENABLE_PIN = 12   # IO12
+DEFAULT_ENABLE_PIN = 12   # IO12   
 DEFAULT_PWM_PIN    = 13   # IO13
 
 class SIBSLED:

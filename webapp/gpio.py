@@ -9,7 +9,7 @@ DEFAULT_PWM_PIN    = 13   # IO13
 
 class SIBSLED:
     def __init__(self, pwm_pin=DEFAULT_PWM_PIN, enable_pin=DEFAULT_ENABLE_PIN,
-                 freq=1000, start_pct=5.0, max_pct=70.0):
+                 freq=1000, start_pct=20.0, max_pct=90.0):
         self.start_pct = max(0.0, min(100.0, float(start_pct))) / 100.0
         self.max_pct = max(0.0, min(100.0, float(max_pct))) / 100.0
         self.freq = int(freq)
@@ -19,6 +19,8 @@ class SIBSLED:
             self.enable = DigitalOutputDevice(enable_pin, active_high=True,
                                               initial_value=False)
             self.led = PWMLED(pwm_pin, frequency=self.freq, initial_value=0.0)
+            
+            self.enable.on() #added
         except Exception as e:
             fatal(f"Could not initialize GPIO devices: {e}")
             raise
@@ -32,7 +34,7 @@ class SIBSLED:
             warn(f"Requested start_pct {start_val*100.0:.1f}% greater than max {self.max_pct*100.0:.1f}% — clamping")
             start_val = self.max_pct
         try:
-            self.enable.on()
+            #self.enable.on()
             time.sleep(0.01)
             self.led.value = start_val
             info(f"LED enabled — start duty {start_val*100.0:.1f}%")
@@ -61,7 +63,7 @@ class SIBSLED:
         try:
             self.led.value = 0.0
             time.sleep(0.01)
-            self.enable.off()
+            #self.enable.off()
             info("LED disabled")
         except Exception as e:
             error(f"Error disabling LED: {e}")

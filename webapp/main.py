@@ -17,9 +17,9 @@ app = Flask(__name__, static_url_path="/static")
 socketio = SocketIO(app)
 
 # Set pin 22 to high to enable ethernet connection
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(22, GPIO.OUT)
-GPIO.output(22, GPIO.HIGH)
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setup(22, GPIO.OUT)
+#GPIO.output(22, GPIO.HIGH)
 
 # Initialize Picamera2
 picam2 = Picamera2()

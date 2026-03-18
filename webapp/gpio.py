@@ -1,6 +1,5 @@
 # sibs_led_simple.py
 from gpiozero import PWMLED, DigitalOutputDevice
-from gpiozero.pins.lgpio import LGPIOFactory
 from loggerthyst import info, warn, error, fatal
 import time
 
@@ -19,7 +18,7 @@ class SIBSLED:
         try:
             self.enable = DigitalOutputDevice(enable_pin, active_high=True,
                                               initial_value=False)
-            self.led = PWMLED(pwm_pin, frequency=self.freq, initial_value=0.0, pin_factory=LGPIOFactory())
+            self.led = PWMLED(pwm_pin, frequency=self.freq, initial_value=0.0)
         except Exception as e:
             fatal(f"Could not initialize GPIO devices: {e}")
             raise

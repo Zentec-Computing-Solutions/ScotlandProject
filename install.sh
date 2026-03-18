@@ -69,5 +69,17 @@ fi
 
 sudo systemctl enable sibs.service
 sudo systemctl start sibs.service
-printf "${Green}Service added to systemd.\n"
+printf "${Green}SIBS service added to systemd.\n"
+
+# Install networking service
+if [ -f /etc/systemd/system/sibs-net.service ]; then
+    sudo systemctl stop sibs-net.service
+    sudo systemctl disable sibs-net.service
+fi
+sudo \cp -f ./sibs-net.service /etc/systemd/system/sibs-net.service
+sudo systemctl enable sibs-net.service
+sudo systemctl start sibs-net.service
+printf "${Green}SIBS Networking service added to systemd.\n"
+
+printf "${Green}All services added to systemd.\n"
 printf "${Green}SIBS install complete, reboot to start SIBS.\n"

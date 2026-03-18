@@ -1,0 +1,11 @@
+[Unit]
+Description=Start SIBS Networking
+Before=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c 'cd /home/admin/ScotlandProject && source venv/bin/activate && python init_ethernet.py'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

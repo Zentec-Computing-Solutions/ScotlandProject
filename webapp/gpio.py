@@ -38,6 +38,7 @@ class SIBSLED:
             time.sleep(0.01)
             self.led.value = start_val
             info(f"LED enabled — start duty {start_val*100.0:.1f}%")
+            self.led_on = True
         except Exception as e:
             error(f"Error enabling LED: {e}")
             raise
@@ -65,13 +66,14 @@ class SIBSLED:
             time.sleep(0.01)
             #self.enable.off()
             info("LED disabled")
+            self.led_on = False
         except Exception as e:
             error(f"Error disabling LED: {e}")
             raise
 
     def is_on(self):
         try:
-            return bool(self.enable.value)
+            return bool(self.led_on)
         except Exception:
             return False
 

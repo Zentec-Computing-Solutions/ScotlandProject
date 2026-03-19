@@ -118,7 +118,7 @@ function setupSlider(settingName, sliderId) {
 setupSlider("brightness", "brightnessSlider");
 setupSlider("contrast", "contrastSlider");
 setupSlider("saturation", "saturationSlider");
-setupSlider("sharpness", "sharpnessSlider");
+//setupSlider("sharpness", "sharpnessSlider");
 setupSlider("ledBrightness", "ledBrightnessSlider");
 
 // BUTTONS
@@ -167,7 +167,7 @@ function ledToggle(checkbox) {
             "ledBrightnessSlider",
         );
         ledBrightnessSlider.disabled = false;
-        ledBrightnessSlider.value = 5;
+        ledBrightnessSlider.value = 20;
     } else {
         const ledBrightnessSlider = document.getElementById(
             "ledBrightnessSlider",

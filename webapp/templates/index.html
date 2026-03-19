@@ -95,6 +95,22 @@
                 </div>
 
                 <mdui-card variant="elevated" class="slider-card">
+                    <label for="ledBrightnessSlider">LED Control</label>
+
+                    <div class="horizontal">
+                        <mdui-switch
+                            id="ledSwitch"
+                            label="LED On/Off"
+                            onchange="ledToggle(this)"
+                        ></mdui-switch>
+
+                        <mdui-slider
+                            id="ledBrightnessSlider"
+                            value="20"
+                            min="20"
+                            max="90"
+                        ></mdui-slider>
+                    </div>
                     <label for="brightnessSlider">Brightness</label>
                     <mdui-slider
                         id="brightnessSlider"
@@ -121,29 +137,8 @@
                         max="4"
                         step="0.1"
                     ></mdui-slider>
+                </mdui-card>
 
-                    <label for="sharpnessSlider">Sharpness</label>
-                    <mdui-slider
-                        id="sharpnessSlider"
-                        value="1"
-                        min="0"
-                        max="16"
-                    ></mdui-slider>
-                </mdui-card>
-                <mdui-card variant="elevated" class="slider-card">
-                    <mdui-switch
-                        id="ledSwitch"
-                        label="LED On/Off"
-                        onchange="ledToggle(this)"
-                    ></mdui-switch>
-                    <label for="ledBrightness">LED Brightness</label>
-                    <mdui-slider
-                        id="ledBrightnessSlider"
-                        value="20"
-                        min="20"
-                        max="90"
-                    ></mdui-slider>
-                </mdui-card>
                 <mdui-card variant="elevated" class="sample-controls">
                     <div class="horizontal">
                         <mdui-button-icon

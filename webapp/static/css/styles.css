@@ -100,3 +100,11 @@ p {
     margin-bottom: 0px;
     margin-top: 5px;
 }
+
+mdui-switch {
+    margin-left: 20px;
+}
+
+#ledBrightnessSlider {
+    width: 97%;
+}

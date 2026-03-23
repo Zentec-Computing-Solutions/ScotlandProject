@@ -1,4 +1,4 @@
-# jan/02/1970 00:27:23 by RouterOS 6.49.11
+# mar/24/2026 09:30:24 by RouterOS 6.49.11
 # software id = ZKI6-XILV
 #
 # model = RBmAP2nD
@@ -18,8 +18,17 @@ add bridge=Bridge interface=wlan1
 add bridge=Bridge interface=ether1
 /ip address
 add address=192.168.5.1/24 interface=Bridge network=192.168.5.0
+/ip dhcp-client
+add disabled=no interface=ether2
 /ip dhcp-server lease
 add address=192.168.5.21 client-id=1:3e:a1:2c:b2:32:f6 mac-address=3E:A1:2C:B2:32:F6 server=defconf
 add address=192.168.5.254 client-id=1:ce:79:8:c7:b9:10 mac-address=CE:79:08:C7:B9:10 server=defconf
+add address=192.168.5.251 client-id=1:fe:a3:87:30:d6:6b mac-address=FE:A3:87:30:D6:6B server=defconf
 /ip dhcp-server network
 add address=192.168.5.0/24 dns-server=192.168.5.1 gateway=192.168.5.1
+/ip dns
+set allow-remote-requests=yes servers=8.8.8.8,8.8.4.4
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=ether2
+/system clock
+set time-zone-name=Pacific/Auckland

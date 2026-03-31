@@ -1,44 +1,115 @@
-# sibs_led_simple.py
-from gpiozero import PWMLED, DigitalOutputDevice
-from loggerthyst import info, warn, error, fatal
+from threading import Lock
 import time
 
-# HAT pin assignments (BCM)
-DEFAULT_ENABLE_PIN = 12   # IO12   
-DEFAULT_PWM_PIN    = 13   # IO13
+from smbus2 import SMBus
+
+from loggerthyst import info, warn, error, fatal
+
+
+DEFAULT_ENABLE_PIN = 12
+DEFAULT_PWM_PIN = 13
+
+DEFAULT_I2C_BUS = 1
+DEFAULT_I2C_ADDR = 0x2F
+
+REG_PID = 0xFD
+EMC2301_PID = 0x37
+REG_FAN1_SETTING = 0x30
+REG_PWM_OUTPUT_CONFIG = 0x2B
+REG_FAN1_CONFIG1 = 0x32
+
+
+def _percent_to_value(pct):
+    if pct <= 0:
+        return 0
+    if pct >= 100:
+        return 255
+    return int(round(pct * 255.0 / 100.0))
+
 
 class SIBSLED:
-    def __init__(self, pwm_pin=DEFAULT_PWM_PIN, enable_pin=DEFAULT_ENABLE_PIN,
-                 freq=1000, start_pct=20.0, max_pct=90.0):
-        self.start_pct = max(0.0, min(100.0, float(start_pct))) / 100.0
-        self.max_pct = max(0.0, min(100.0, float(max_pct))) / 100.0
+    def __init__(
+        self,
+        pwm_pin=DEFAULT_PWM_PIN,
+        enable_pin=DEFAULT_ENABLE_PIN,
+        freq=1000,
+        start_pct=20.0,
+        max_pct=90.0,
+        i2c_bus=DEFAULT_I2C_BUS,
+        i2c_addr=DEFAULT_I2C_ADDR,
+    ):
+        self.start_pct = max(0.0, min(100.0, float(start_pct)))
+        self.max_pct = max(0.0, min(100.0, float(max_pct)))
         self.freq = int(freq)
+        self.pwm_pin = pwm_pin
+        self.enable_pin = enable_pin
 
-        # Use gpiozero default backend (RPi.GPIO) — no pigpiod required
+        self.i2c_bus = int(i2c_bus)
+        self.i2c_addr = int(i2c_addr)
+        self.led_on = False
+        self._brightness_pct = 0.0
+        self._bus_lock = Lock()
+
         try:
-            self.enable = DigitalOutputDevice(enable_pin, active_high=True,
-                                              initial_value=False)
-            self.led = PWMLED(pwm_pin, frequency=self.freq, initial_value=0.0)
-            
-            self.enable.on() #added
+            self.bus = SMBus(self.i2c_bus)
+            self._configure_emc2301()
+            self._write_percent(0.0)
         except Exception as e:
-            fatal(f"Could not initialize GPIO devices: {e}")
+            fatal(f"Could not initialize EMC2301 on i2c-{self.i2c_bus} addr=0x{self.i2c_addr:02X}: {e}")
             raise
 
-        info(f"SIBSLED initialized enable={enable_pin} pwm={pwm_pin} freq={self.freq}Hz "
-             f"start={self.start_pct*100.0:.1f}% max={self.max_pct*100.0:.1f}%")
+        info(
+            f"SIBSLED initialized via EMC2301 i2c-{self.i2c_bus} addr=0x{self.i2c_addr:02X} "
+            f"start={self.start_pct:.1f}% max={self.max_pct:.1f}%"
+        )
+
+    def _readb(self, reg):
+        return self.bus.read_byte_data(self.i2c_addr, reg)
+
+    def _writeb(self, reg, val):
+        self.bus.write_byte_data(self.i2c_addr, reg, val & 0xFF)
+
+    def _configure_emc2301(self):
+        with self._bus_lock:
+            pid = self._readb(REG_PID)
+            if pid != EMC2301_PID:
+                raise RuntimeError(
+                    f"Unexpected EMC2301 Product ID 0x{pid:02X}; expected 0x{EMC2301_PID:02X}"
+                )
+
+            cfg = self._readb(REG_FAN1_CONFIG1)
+            if (cfg & 0x80) != 0:
+                self._writeb(REG_FAN1_CONFIG1, cfg & ~0x80)
+                time.sleep(0.05)
+
+            pwmcfg = self._readb(REG_PWM_OUTPUT_CONFIG)
+            if (pwmcfg & 0x01) == 0:
+                self._writeb(REG_PWM_OUTPUT_CONFIG, pwmcfg | 0x01)
+                time.sleep(0.05)
+
+    def _write_percent(self, pct):
+        pct_clamped = max(0.0, min(100.0, float(pct)))
+        reg_val = _percent_to_value(pct_clamped)
+        with self._bus_lock:
+            self._writeb(REG_FAN1_SETTING, reg_val)
+            time.sleep(0.02)
+            rb = self._readb(REG_FAN1_SETTING)
+
+        self._brightness_pct = (rb / 255.0) * 100.0
+        self.led_on = rb > 0
+        return rb
 
     def on(self, start_pct=None):
-        start_val = self.start_pct if start_pct is None else max(0.0, min(100.0, float(start_pct))) / 100.0
-        if start_val > self.max_pct:
-            warn(f"Requested start_pct {start_val*100.0:.1f}% greater than max {self.max_pct*100.0:.1f}% — clamping")
-            start_val = self.max_pct
+        req = self.start_pct if start_pct is None else float(start_pct)
+        pct = max(0.0, min(100.0, req))
+        if pct > self.max_pct:
+            warn(
+                f"Requested start_pct {pct:.1f}% greater than max {self.max_pct:.1f}% - clamping"
+            )
+            pct = self.max_pct
         try:
-            #self.enable.on()
-            time.sleep(0.01)
-            self.led.value = start_val
-            info(f"LED enabled — start duty {start_val*100.0:.1f}%")
-            self.led_on = True
+            rb = self._write_percent(pct)
+            info(f"LED enabled - reg 0x30=0x{rb:02X} ({self._brightness_pct:.1f}%)")
         except Exception as e:
             error(f"Error enabling LED: {e}")
             raise
@@ -49,24 +120,23 @@ class SIBSLED:
         except Exception:
             error(f"set_brightness: invalid pct {pct!r}")
             return
-        val = max(0.0, min(100.0, pctf)) / 100.0
-        if val > self.max_pct:
-            warn(f"Requested {pctf:.1f}% > max {self.max_pct*100.0:.1f}%; clamping")
-            val = self.max_pct
+
+        pct_clamped = max(0.0, min(100.0, pctf))
+        if pct_clamped > self.max_pct:
+            warn(f"Requested {pctf:.1f}% > max {self.max_pct:.1f}%; clamping")
+            pct_clamped = self.max_pct
+
         try:
-            self.led.value = val
-            info(f"Brightness set to {val*100.0:.1f}%")
+            rb = self._write_percent(pct_clamped)
+            info(f"Brightness set - reg 0x30=0x{rb:02X} ({self._brightness_pct:.1f}%)")
         except Exception as e:
-            error(f"Error setting brightness to {val*100.0:.1f}%: {e}")
+            error(f"Error setting brightness to {pct_clamped:.1f}%: {e}")
             raise
 
     def off(self):
         try:
-            self.led.value = 0.0
-            time.sleep(0.01)
-            #self.enable.off()
-            info("LED disabled")
-            self.led_on = False
+            rb = self._write_percent(0.0)
+            info(f"LED disabled - reg 0x30=0x{rb:02X}")
         except Exception as e:
             error(f"Error disabling LED: {e}")
             raise
@@ -79,10 +149,9 @@ class SIBSLED:
 
     def close(self):
         try:
-            self.led.value = 0.0
-            self.enable.off()
-            self.led.close()
-            self.enable.close()
+            self._write_percent(0.0)
+            with self._bus_lock:
+                self.bus.close()
             info("SIBSLED closed")
         except Exception as e:
             warn(f"Error closing SIBSLED: {e}")

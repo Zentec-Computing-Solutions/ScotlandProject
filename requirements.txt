@@ -2,7 +2,7 @@ colorama==0.4.6
 Flask==3.0.3
 Flask_Minify==0.48
 Flask_SocketIO==5.4.1
-gpiozero==2.0.1
 opencv_python==4.10.0.84
 picamera2==0.3.21
 pyserial==3.5
+smbus2==0.4.3

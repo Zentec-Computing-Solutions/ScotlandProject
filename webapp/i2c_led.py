@@ -49,6 +49,9 @@ class SIBSLED:
 
         self.i2c_bus = int(i2c_bus)
         self.i2c_addr = int(i2c_addr)
+        self.bus = None
+        self.available = False
+        self._unavailable_warned = False
         self.led_on = False
         self._brightness_pct = 0.0
         self._bus_lock = Lock()
@@ -57,20 +60,29 @@ class SIBSLED:
             self.bus = SMBus(self.i2c_bus)
             self._configure_emc2301()
             self._write_percent(0.0)
+            self.available = True
         except Exception as e:
-            fatal(f"Could not initialize EMC2301 on i2c-{self.i2c_bus} addr=0x{self.i2c_addr:02X}: {e}")
-            raise
+            warn(
+                f"EMC2301 unavailable on i2c-{self.i2c_bus} addr=0x{self.i2c_addr:02X}: {e}. "
+                "LED control disabled; app will continue."
+            )
 
-        info(
-            f"SIBSLED initialized via EMC2301 i2c-{self.i2c_bus} addr=0x{self.i2c_addr:02X} "
-            f"start={self.start_pct:.1f}% max={self.max_pct:.1f}%"
-        )
+        if self.available:
+            info(
+                f"SIBSLED initialized via EMC2301 i2c-{self.i2c_bus} addr=0x{self.i2c_addr:02X} "
+                f"start={self.start_pct:.1f}% max={self.max_pct:.1f}%"
+            )
 
     def _readb(self, reg):
         return self.bus.read_byte_data(self.i2c_addr, reg)
 
     def _writeb(self, reg, val):
         self.bus.write_byte_data(self.i2c_addr, reg, val & 0xFF)
+
+    def _warn_unavailable_once(self):
+        if not self._unavailable_warned:
+            warn("EMC2301 I2C not available; ignoring LED command.")
+            self._unavailable_warned = True
 
     def _configure_emc2301(self):
         with self._bus_lock:
@@ -119,12 +131,26 @@ class SIBSLED:
                 warn(f"Could not update spin-up config (reg 0x36): {e}")
 
     def _write_percent(self, pct):
+        if not self.available or self.bus is None:
+            self._warn_unavailable_once()
+            self.led_on = False
+            self._brightness_pct = 0.0
+            return 0
+
         pct_clamped = max(0.0, min(100.0, float(pct)))
         reg_val = _percent_to_value(pct_clamped)
-        with self._bus_lock:
-            self._writeb(REG_FAN1_SETTING, reg_val)
-            time.sleep(0.02)
-            rb = self._readb(REG_FAN1_SETTING)
+        try:
+            with self._bus_lock:
+                self._writeb(REG_FAN1_SETTING, reg_val)
+                time.sleep(0.02)
+                rb = self._readb(REG_FAN1_SETTING)
+        except Exception as e:
+            warn(f"EMC2301 I2C communication failed; disabling LED control: {e}")
+            self.available = False
+            self._warn_unavailable_once()
+            self.led_on = False
+            self._brightness_pct = 0.0
+            return 0
 
         self._brightness_pct = (rb / 255.0) * 100.0
         self.led_on = rb > 0
@@ -138,12 +164,9 @@ class SIBSLED:
                 f"Requested start_pct {pct:.1f}% greater than max {self.max_pct:.1f}% - clamping"
             )
             pct = self.max_pct
-        try:
-            rb = self._write_percent(pct)
+        rb = self._write_percent(pct)
+        if self.available:
             info(f"LED enabled - reg 0x30=0x{rb:02X} ({self._brightness_pct:.1f}%)")
-        except Exception as e:
-            error(f"Error enabling LED: {e}")
-            raise
 
     def set_brightness(self, pct):
         try:
@@ -157,20 +180,14 @@ class SIBSLED:
             warn(f"Requested {pctf:.1f}% > max {self.max_pct:.1f}%; clamping")
             pct_clamped = self.max_pct
 
-        try:
-            rb = self._write_percent(pct_clamped)
+        rb = self._write_percent(pct_clamped)
+        if self.available:
             info(f"Brightness set - reg 0x30=0x{rb:02X} ({self._brightness_pct:.1f}%)")
-        except Exception as e:
-            error(f"Error setting brightness to {pct_clamped:.1f}%: {e}")
-            raise
 
     def off(self):
-        try:
-            rb = self._write_percent(0.0)
+        rb = self._write_percent(0.0)
+        if self.available:
             info(f"LED disabled - reg 0x30=0x{rb:02X}")
-        except Exception as e:
-            error(f"Error disabling LED: {e}")
-            raise
 
     def is_on(self):
         try:
@@ -179,10 +196,11 @@ class SIBSLED:
             return False
 
     def close(self):
-        try:
-            self._write_percent(0.0)
-            with self._bus_lock:
-                self.bus.close()
-            info("SIBSLED closed")
-        except Exception as e:
-            warn(f"Error closing SIBSLED: {e}")
+        if self.available and self.bus is not None:
+            try:
+                self._write_percent(0.0)
+                with self._bus_lock:
+                    self.bus.close()
+                info("SIBSLED closed")
+            except Exception as e:
+                warn(f"Error closing SIBSLED: {e}")

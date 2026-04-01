@@ -4,7 +4,7 @@ import os
 from flask import Flask
 from flask_minify import Minify
 from flask_socketio import SocketIO
-from gpio import *
+from i2c_led import *
 from routes import init_routes
 from socketio_handler import init_socketio
 from RPi import GPIO

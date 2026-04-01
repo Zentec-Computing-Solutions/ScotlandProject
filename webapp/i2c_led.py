@@ -18,6 +18,9 @@ REG_FAN1_SETTING = 0x30
 REG_PWM_OUTPUT_CONFIG = 0x2B
 REG_FAN1_CONFIG1 = 0x32
 
+REG_CONFIG    = 0x20   # Configuration register (WD_EN bit = 0x20)
+REG_FAN1_SPIN = 0x36   # Fan1 Spin-Up Configuration (NKCK1 bit = 0x20)
+
 
 def _percent_to_value(pct):
     if pct <= 0:
@@ -77,15 +80,43 @@ class SIBSLED:
                     f"Unexpected EMC2301 Product ID 0x{pid:02X}; expected 0x{EMC2301_PID:02X}"
                 )
 
+            # Ensure closed-loop (ENAG1) is cleared so direct writes work
             cfg = self._readb(REG_FAN1_CONFIG1)
             if (cfg & 0x80) != 0:
                 self._writeb(REG_FAN1_CONFIG1, cfg & ~0x80)
                 time.sleep(0.05)
 
+            # Ensure PWM1 push-pull for LED -> resistor -> GND wiring
             pwmcfg = self._readb(REG_PWM_OUTPUT_CONFIG)
             if (pwmcfg & 0x01) == 0:
                 self._writeb(REG_PWM_OUTPUT_CONFIG, pwmcfg | 0x01)
                 time.sleep(0.05)
+
+            # --- NEW: Disable watchdog (clear WD_EN in reg 0x20) ---
+            try:
+                cfg20 = self._readb(REG_CONFIG)
+                if (cfg20 & 0x20) != 0:              # WD_EN bit set?
+                    new_cfg20 = cfg20 & ~0x20        # clear WD_EN
+                    self._writeb(REG_CONFIG, new_cfg20)
+                    time.sleep(0.02)
+                    info(f"Cleared WD_EN (reg 0x20: 0x{cfg20:02X} -> 0x{new_cfg20:02X})")
+            except Exception as e:
+                # nonfatal: log and continue
+                warn(f"Could not update watchdog bit (reg 0x20): {e}")
+
+            # --- NEW: Enable No-Kick (NKCK1 bit) and set minimal spin level/time ---
+            # NKCK1 = bit5 (0x20). SPLV[4:2] + SPT[1:0] occupy bits [4:0].
+            # We clear bits 4..0 (spin-level/time -> SPLV=000 (30%), SPT=00 (250ms))
+            # and set NKCK1 (bit5).
+            try:
+                spin = self._readb(REG_FAN1_SPIN)
+                new_spin = (spin & ~0x1F) | 0x20   # clear SPLV/SPT, set NKCK1
+                if new_spin != spin:
+                    self._writeb(REG_FAN1_SPIN, new_spin)
+                    time.sleep(0.02)
+                    info(f"Set No-Kick & minimal spin (reg 0x36: 0x{spin:02X} -> 0x{new_spin:02X})")
+            except Exception as e:
+                warn(f"Could not update spin-up config (reg 0x36): {e}")
 
     def _write_percent(self, pct):
         pct_clamped = max(0.0, min(100.0, float(pct)))

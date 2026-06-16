@@ -83,7 +83,7 @@ function toggleSampleButton(buttonNumber) {
         button.disabled = true;
         buttonEnable.disabled = false;
         //buttonEnable.icon = "lock";
-    }, 3000);
+    }, 7000);
 }
 
 socket.on("led", function (data) {

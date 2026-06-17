@@ -17,6 +17,56 @@ body {
     color: var(--light-shades);
 }
 
+.settings-launcher {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2000;
+}
+
+.settings-popout {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    width: min(320px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+}
+
+.settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-row {
+    align-items: center;
+}
+
+.settings-row mdui-slider {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+}
+
+.settings-popout label {
+    display: block;
+    margin: 0;
+}
+
+.settings-popout mdui-switch {
+    margin-left: 0;
+}
+
+.settings-popout mdui-slider {
+    width: 100%;
+}
+
+.settings-popout #ledBrightnessSlider {
+    width: 100%;
+}
+
 .vertical {
     display: flex;
     flex-direction: column;
@@ -57,10 +107,32 @@ body {
 }
 
 .video-feed-outer {
+    position: relative;
     padding: 20px;
     height: calc(74vh - 20px);
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+}
+
+.reload-launcher {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2000;
+}
+
+.settings-action-button {
+    font-size: 1rem;
+}
+
+.settings-credits {
+    text-align: center;
+}
+
+.settings-credits p {
+    margin: 0;
+    font-size: 0.75rem;
 }
 
 .sample-button {

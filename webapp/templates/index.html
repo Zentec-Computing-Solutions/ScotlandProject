@@ -58,6 +58,100 @@
                 class="video-feed-outer"
                 id="video-container-id"
             >
+                <div class="settings-launcher">
+                    <mdui-dropdown placement="bottom-end">
+                        <mdui-button-icon
+                            slot="trigger"
+                            variant="filled-tonal"
+                            icon="settings"
+                            title="Settings"
+                            aria-label="Settings"
+                        ></mdui-button-icon>
+                        <mdui-card variant="elevated" class="settings-popout">
+                            <div class="settings-section">
+                                <label for="ledBrightnessSlider">LED Control</label>
+
+                                <div class="horizontal settings-row">
+                                    <mdui-switch
+                                        id="ledSwitch"
+                                        label="LED On/Off"
+                                        onchange="ledToggle(this)"
+                                    ></mdui-switch>
+
+                                    <mdui-slider
+                                        id="ledBrightnessSlider"
+                                        value="20"
+                                        min="20"
+                                        max="90"
+                                    ></mdui-slider>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <label for="brightnessSlider">Camera Brightness</label>
+                                <mdui-slider
+                                    id="brightnessSlider"
+                                    value="0"
+                                    min="-1"
+                                    max="1"
+                                    step="0.1"
+                                ></mdui-slider>
+
+                                <label for="contrastSlider">Camera Contrast</label>
+                                <mdui-slider
+                                    id="contrastSlider"
+                                    value="1"
+                                    min="0"
+                                    max="8"
+                                    step="0.1"
+                                ></mdui-slider>
+
+                                <label for="saturationSlider">Camera Saturation</label>
+                                <mdui-slider
+                                    id="saturationSlider"
+                                    value="1"
+                                    min="0"
+                                    max="4"
+                                    step="0.1"
+                                ></mdui-slider>
+                            </div>
+
+                            <mdui-divider></mdui-divider>
+
+                            <div class="settings-section">
+                                <mdui-button
+                                    class="settings-action-button"
+                                    variant="filled"
+                                    onclick="power('restart')"
+                                    style="width: 100%;"
+                                >
+                                    Restart SIBS
+                                </mdui-button>
+                            </div>
+
+                            <div class="settings-section settings-credits">
+                                <p style="font-size: 0.875rem; line-height: 1.4;">
+                                    Nigel Keely Et al.<br />
+                                    Zentec Computing Solutions Ltd
+                                </p>
+                                <img
+                                    src="{{ url_for('static', filename='img/mdel-horizontal.png') }}"
+                                    alt="SIBS Logo"
+                                    style="width: 100%; height: auto; margin-top: 8px;"
+                                />
+                            </div>
+                        </mdui-card>
+                    </mdui-dropdown>
+                </div>
+                <div class="reload-launcher">
+                    <mdui-button-icon
+                        variant="filled-tonal"
+                        icon="refresh"
+                        title="Reload Page"
+                        aria-label="Reload Page"
+                        onclick="reload()"
+                    ></mdui-button-icon>
+                </div>
                 <img id="video_feed" src="/video_feed" />
             </mdui-card>
 
@@ -69,24 +163,12 @@
                         onclick="reload()"
                         >Reload Page</mdui-button
                     >
-                    <!--<mdui-button
-                        class="button"
-                        title="Restarts the SIBS software"
-                        onclick="restartWebserver()"
-                        >Restart SIBS</mdui-button
-                    >--
                     <mdui-button
                         class="button"
                         title="Restarts the device"
                         onclick="power('restart')"
                         >Restart SIBS</mdui-button
                     >
-                    <!--<mdui-button
-                        class="button"
-                        title="Powers down the host device"
-                        onclick="power('shutdown')"
-                        >Shutdown Host</mdui-button
-                    >--
                     <p>
                         Nigel Keely Et al.<br />
                         Zentec Computing Solutions Ltd<br />
@@ -96,51 +178,6 @@
                         alt="SIBS Logo"
                     />
                 </div>-->
-
-                <!--<mdui-card variant="elevated" class="slider-card">
-                    <label for="ledBrightnessSlider">LED Control</label>
-
-                    <div class="horizontal">
-                        <mdui-switch
-                            id="ledSwitch"
-                            label="LED On/Off"
-                            onchange="ledToggle(this)"
-                        ></mdui-switch>
-
-                        <mdui-slider
-                            id="ledBrightnessSlider"
-                            value="20"
-                            min="20"
-                            max="90"
-                        ></mdui-slider>
-                    </div>
-                    <label for="brightnessSlider">Camera Brightness</label>
-                    <mdui-slider
-                        id="brightnessSlider"
-                        value="0"
-                        min="-1"
-                        max="1"
-                        step="0.1"
-                    ></mdui-slider>
-
-                    <label for="contrastSlider">Camera Contrast</label>
-                    <mdui-slider
-                        id="contrastSlider"
-                        value="1"
-                        min="0"
-                        max="8"
-                        step="0.1"
-                    ></mdui-slider>
-
-                    <label for="saturationSlider">Camera Saturation</label>
-                    <mdui-slider
-                        id="saturationSlider"
-                        value="1"
-                        min="0"
-                        max="4"
-                        step="0.1"
-                    ></mdui-slider>
-                </mdui-card>-->
 
                 <mdui-card variant="elevated" class="sample-controls">
                     <div class="vertical">

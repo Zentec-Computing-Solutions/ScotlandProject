@@ -43,11 +43,10 @@ body {
 
 .sample-controls {
     display: grid;
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     padding: 20px;
-    margin-left: 20px;
-    width: 20vw;
+    width: 100%;
 }
 
 #video_feed {
@@ -59,21 +58,20 @@ body {
 
 .video-feed-outer {
     padding: 20px;
-    height: calc(67vh - 20px);
+    height: calc(74vh - 20px);
     display: flex;
     justify-content: center;
 }
 
 .sample-button {
-    margin-top: 10px;
-    margin-right: 20px;
-    width: 80%;
-    height: 5vh;
+    width: 95%;
+    height: 10vh;
 }
 
 .sample-button-enable {
-    height: 5vh;
     margin-top: 10px;
+    height: 5vh;
+    width: 95%;
 }
 
 .slider-card {

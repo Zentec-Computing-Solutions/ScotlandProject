@@ -192,9 +192,24 @@ function checkVideoFeed() {
     }
 }
 
+function updateVersionNumber() {
+    fetch("/static/version.json")
+        .then((response) => response.json())
+        .then((data) => {
+            const versionElement = document.getElementById("version-number");
+            versionElement.textContent = `Software Version: ${data["software-version"]}`;
+        })
+        .catch((error) => {
+            console.error("Error fetching version number:", error);
+        });
+}
+
 setInterval(checkVideoFeed, 1000);
 
 // Setup event listeners
 window.addEventListener("DOMContentLoaded", function () {
     getInitalData();
+    updateVersionNumber();
 });
+
+
